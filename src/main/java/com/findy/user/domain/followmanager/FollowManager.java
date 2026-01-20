@@ -11,6 +11,11 @@ public class FollowManager {
         this.followingCount = new IntegerCounter();
     }
 
+    public FollowManager(long followerCount, long followingCount) {
+        this.followerCount = new IntegerCounter(followerCount);
+        this.followingCount = new IntegerCounter(followingCount);
+    }
+
     public void increaseFollowingCount() {
         followingCount.increase();
     }
@@ -27,11 +32,11 @@ public class FollowManager {
         followerCount.decrease();
     }
 
-    public int getFollowerCount() {
+    public long getFollowerCount() {
         return followerCount.getCount();
     }
 
-    public int getFollowingCount() {
+    public long getFollowingCount() {
         return followingCount.getCount();
     }
 }

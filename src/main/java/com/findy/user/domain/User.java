@@ -2,14 +2,25 @@ package com.findy.user.domain;
 
 import com.findy.user.domain.followmanager.FollowManager;
 import com.findy.user.domain.social.SocialAccount;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.util.Objects;
 
+@Getter
 public class User {
     Long id;
     UserInfo userInfo;
     SocialAccount socialAccount;
     FollowManager followManager;
+
+    @Builder
+    private User(Long id, UserInfo userInfo, SocialAccount socialAccount, FollowManager followManager) {
+        this.id = id;
+        this.userInfo = userInfo;
+        this.socialAccount = socialAccount;
+        this.followManager = followManager != null ? followManager : new FollowManager();
+    }
 
     public User (Long id, UserInfo userInfo, SocialAccount socialAccount) {
         if (userInfo == null) {
@@ -53,6 +64,10 @@ public class User {
 
     public String getProfileImageUrl() {
         return userInfo.getProfileImageUrl();
+    }
+
+    public String getEmail() {
+        return socialAccount.getEmail();
     }
 
     @Override

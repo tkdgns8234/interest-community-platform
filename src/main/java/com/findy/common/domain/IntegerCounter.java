@@ -1,10 +1,17 @@
 package com.findy.common.domain;
 
+import lombok.Getter;
+
+@Getter
 public class IntegerCounter {
-    int count;
+    long count;
 
     public IntegerCounter() {
         this.count = 0;
+    }
+
+    public IntegerCounter(long count) {
+        this.count = count;
     }
 
     public void increase() {
@@ -15,9 +22,5 @@ public class IntegerCounter {
         if (this.count > 0) {
             this.count--;
         }
-    }
-
-    public int getCount() {
-        return count;
     }
 }
