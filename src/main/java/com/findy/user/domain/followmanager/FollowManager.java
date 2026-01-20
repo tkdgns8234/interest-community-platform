@@ -26,4 +26,12 @@ public class FollowManager {
     public void decreaseFollowerCount() {
         followerCount.decrease();
     }
+
+    public int getFollowerCount() {
+        return followerCount.getCount();
+    }
+
+    public int getFollowingCount() {
+        return followingCount.getCount();
+    }
 }

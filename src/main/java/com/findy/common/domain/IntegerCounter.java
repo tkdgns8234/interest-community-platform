@@ -16,4 +16,8 @@ public class IntegerCounter {
             this.count--;
         }
     }
+
+    public int getCount() {
+        return count;
+    }
 }
