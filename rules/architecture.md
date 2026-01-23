@@ -1,0 +1,11 @@
+# Architecture Rules
+- 헥사고날 아키텍처를 기반으로 설계합니다.
+- 클린 아키텍처 원칙을 준수합니다.
+- 각 계층은 명확한 책임을 가지고, 독립적으로 배포 가능해야 합니다.
+- 의존성 방향은 저수준 모듈에서 고수준 모듈 방향으로 이어져야 합니다.
+- Service를 UseCase로 대체했을때 현재 서비스는 MVP 수준으로 구현할 예정이기에 득보다 실이 많다고 판단.
+  - 장점: Service 로직의 비대 문제 해결, Service 로직 간 의존성 문제 해결
+  - 단점: 보일러 플레이트 코드 증가, 코드 복잡성 증가
+  - 결론: 현재로서는 Service를 유지하되, 추후 필요시 UseCase로 전환하는 것을 고려.
+- Entity와 비즈니스 로직인 Domain 객체를 분리하고, Entity는 데이터 저장 방법을 정의하므로 Repository Layer에 위치시킵니다.
+- Repository Interface는 application Layer에 위치시킵니다.
