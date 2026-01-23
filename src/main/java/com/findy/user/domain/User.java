@@ -15,15 +15,12 @@ public class User {
     SocialAccount socialAccount;
     FollowManager followManager;
 
-    @Builder
-    private User(Long id, UserInfo userInfo, SocialAccount socialAccount, FollowManager followManager) {
-        this.id = id;
-        this.userInfo = userInfo;
-        this.socialAccount = socialAccount;
-        this.followManager = followManager != null ? followManager : new FollowManager();
+    public User (Long id, UserInfo userInfo, SocialAccount socialAccount) {
+        this(id, userInfo, socialAccount, new FollowManager());
     }
 
-    public User (Long id, UserInfo userInfo, SocialAccount socialAccount) {
+    @Builder
+    public User (Long id, UserInfo userInfo, SocialAccount socialAccount, FollowManager followManager) {
         if (userInfo == null) {
             throw new IllegalArgumentException("UserInfo cannot be null");
         }
@@ -31,7 +28,11 @@ public class User {
         this.id = id;
         this.userInfo = userInfo;
         this.socialAccount = socialAccount;
-        this.followManager = new FollowManager();
+        this.followManager = followManager;
+    }
+
+    public void updateUserInfo(String nickname, String profileImageUrl) {
+        userInfo.update(nickname, profileImageUrl);
     }
 
     public void follow(User targetUser) {

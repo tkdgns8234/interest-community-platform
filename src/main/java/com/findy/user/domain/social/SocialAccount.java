@@ -1,9 +1,10 @@
 package com.findy.user.domain.social;
 
+import com.findy.common.out.repository.entity.BaseTimeEntity;
 import lombok.Getter;
 
 @Getter
-public class SocialAccount {
+public class SocialAccount extends BaseTimeEntity {
     Long id;
     String email;
     String password;
@@ -31,6 +32,11 @@ public class SocialAccount {
 
         validateProviderId(providerId);
         return new SocialAccount(id, email, null, provider, providerId);
+    }
+
+    public void updatePassword(String password) {
+        validatePassword(password);
+        this.password = password;
     }
 
     private static void validateEmail(String email) {

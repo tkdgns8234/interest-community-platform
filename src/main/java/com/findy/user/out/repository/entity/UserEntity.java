@@ -4,6 +4,7 @@ import com.findy.common.out.repository.entity.BaseTimeEntity;
 import com.findy.user.domain.User;
 import com.findy.user.domain.UserInfo;
 import com.findy.user.domain.followmanager.FollowManager;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -26,7 +27,7 @@ public class UserEntity extends BaseTimeEntity {
     private Long followerCount;
     private Long followingCount;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private SocialAccountEntity socialAccountEntity;
 
     public UserEntity(User user) {

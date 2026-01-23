@@ -1,10 +1,12 @@
 # CLAUDE.md
-
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
-
 Interest-based community platform with group chat. Built with Spring Boot 4.0 and JPA, following Domain-Driven Design (DDD) and Clean Architecture principles.
+
+## rules Directory
+This repository contains various rule documents that outline best practices and guidelines for implementing features, architecture, and domain modeling.
+path: rules/ ~.md files
 
 ## Build & Test Commands
 
