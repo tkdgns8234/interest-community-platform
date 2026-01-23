@@ -6,7 +6,6 @@ public class UserInfo {
     private String profileImageUrl;
 
     public UserInfo(String name, String nickname, String profileImageUrl) {
-        // TODO: 이름, 닉네임 유효성 검사 추가
         this.name = name;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
