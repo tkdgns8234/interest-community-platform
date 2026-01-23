@@ -1,8 +1,8 @@
-package com.findy.user.application.interfaces;
+package com.findy.user.app.interfaces;
 
 import com.findy.user.domain.User;
 
 public interface UserRepository {
-    User findById();
+    User findById(long id);
     User save(User user);
 }

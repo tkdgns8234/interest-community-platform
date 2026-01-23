@@ -5,9 +5,11 @@ import com.findy.user.domain.User;
 import com.findy.user.domain.UserInfo;
 import com.findy.user.domain.followmanager.FollowManager;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -24,6 +26,9 @@ public class UserEntity extends BaseTimeEntity {
     private Long followerCount;
     private Long followingCount;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SocialAccountEntity socialAccountEntity;
+
     public UserEntity(User user) {
         this.id = user.getId();
         this.name = user.getName();
@@ -31,6 +36,7 @@ public class UserEntity extends BaseTimeEntity {
         this.profileImageUrl = user.getProfileImageUrl();
         this.followerCount = user.getFollowManager().getFollowerCount();
         this.followingCount = user.getFollowManager().getFollowingCount();
+        this.socialAccountEntity = new SocialAccountEntity(user.getSocialAccount());
     }
 
     public User toUser() {
@@ -38,6 +44,7 @@ public class UserEntity extends BaseTimeEntity {
                 .id(id)
                 .userInfo(new UserInfo(name, nickname, profileImageUrl))
                 .followManager(new FollowManager(followerCount, followingCount))
+                .socialAccount(socialAccountEntity.toSocialAccount())
                 .build();
     }
 }

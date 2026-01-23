@@ -22,6 +22,7 @@ public class SocialAccountEntity extends BaseTimeEntity {
     String email;
     String password;
     String providerId;
+
     @Enumerated(EnumType.STRING)
     Provider provider;
 

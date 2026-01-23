@@ -1,0 +1,30 @@
+package com.findy.user.out.repository;
+
+import com.findy.user.app.interfaces.UserRepository;
+import com.findy.user.domain.User;
+import com.findy.user.out.repository.entity.UserEntity;
+import com.findy.user.out.repository.jpa.JpaUserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
+
+@Repository
+@RequiredArgsConstructor
+public class UserRepositoryImpl implements UserRepository {
+    private final JpaUserRepository jpaUserRepository;
+
+    @Override
+    public User findById(long id) {
+        UserEntity userEntity = jpaUserRepository
+                .findById(id)
+                .orElseThrow(IllegalArgumentException::new);
+
+        return userEntity.toUser();
+    }
+
+    @Override
+    public User save(User user) {
+        UserEntity userEntity = new UserEntity(user);
+        userEntity = jpaUserRepository.save(userEntity);
+        return userEntity.toUser();
+    }
+}

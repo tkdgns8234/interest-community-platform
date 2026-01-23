@@ -1,6 +1,7 @@
 package com.findy.user.domain;
 
 import com.findy.user.domain.followmanager.FollowManager;
+import com.findy.user.domain.social.Provider;
 import com.findy.user.domain.social.SocialAccount;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,9 +26,6 @@ public class User {
     public User (Long id, UserInfo userInfo, SocialAccount socialAccount) {
         if (userInfo == null) {
             throw new IllegalArgumentException("UserInfo cannot be null");
-        }
-        if (socialAccount == null) {
-            throw new IllegalArgumentException("SocialAccount cannot be null");
         }
 
         this.id = id;
@@ -68,6 +66,10 @@ public class User {
 
     public String getEmail() {
         return socialAccount.getEmail();
+    }
+
+    public Provider getProvider() {
+        return socialAccount.getProvider();
     }
 
     @Override
