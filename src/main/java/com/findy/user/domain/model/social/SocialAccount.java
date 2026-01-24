@@ -1,6 +1,6 @@
 package com.findy.user.domain.model.social;
 
-import com.findy.common.infrastructure.repository.entity.BaseTimeEntity;
+import com.findy.common.out.repository.entity.BaseTimeEntity;
 import lombok.Getter;
 
 @Getter

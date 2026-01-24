@@ -2,7 +2,6 @@ package com.findy.user.domain.model;
 
 import com.findy.user.domain.exception.InvalidUserInfoException;
 import com.findy.user.domain.exception.SelfFollowException;
-import com.findy.user.domain.model.followmanager.FollowManager;
 import com.findy.user.domain.model.social.Provider;
 import com.findy.user.domain.model.social.SocialAccount;
 import lombok.Builder;

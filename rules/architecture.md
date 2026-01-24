@@ -8,37 +8,7 @@
   - 단점: 보일러 플레이트 코드 증가, 코드 복잡성 증가
   - 결론: 현재로서는 Service를 유지하되, 추후 필요시 UseCase로 전환하는 것을 고려.
 
-## 2. 패키지 구조
-### 2.1 기본 구조
-```
-com.findy.{domain}/
-├── domain/
-│   ├── model/              # Entity, VO, Enum
-│   ├── service/            # Domain Service (선택적)
-│   └── exception/          # Domain Exception
-├── application/
-│   └── {feature}/          # 기능별 패키지
-│       ├── exception/      # Application Exception
-│       ├── interface/      # repository 인터페이스
-│       ├── dto/            # Application DTO
-│       └── service         # Application Service
-├── presentation/
-│   │── web/                # REST API 관련 클래스
-│   │   └── {feature}/      # 기능별 패키지
-│   │        ├── request/ 
-│   │        ├── response/
-│   │        └── controller
-│   └── event/              # 이벤트 핸들러
-└── infrastructure/
-    └── {external}/         # 외부 시스템별 패키지
-```
-
-**원칙**
-- Domain 계층: 공유 영역 (모든 기능이 사용)
-- Application/Presentation 계층: 기능별 하위 패키지로 분리
-
-
-## 3. 계층별 DTO 분리
+## 2. 계층별 DTO 분리
 ### DTO 계층 구분
 ```
 Presentation Layer (Presentation)
