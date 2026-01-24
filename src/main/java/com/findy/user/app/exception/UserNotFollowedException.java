@@ -1,4 +1,4 @@
-package com.findy.user.application.userrelation.exception;
+package com.findy.user.app.exception;
 
 import com.findy.common.exception.ApplicationException;
 

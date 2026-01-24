@@ -1,10 +1,10 @@
-package com.findy.user.infrastructure.repository;
+package com.findy.user.out.repository;
 
-import com.findy.user.application.user.exception.UserNotFoundException;
-import com.findy.user.application.user.interfaces.UserRepository;
+import com.findy.user.app.exception.UserNotFoundException;
+import com.findy.user.app.interfaces.UserRepository;
 import com.findy.user.domain.model.User;
-import com.findy.user.infrastructure.repository.entity.UserEntity;
-import com.findy.user.infrastructure.repository.jpa.JpaUserRepository;
+import com.findy.user.out.repository.entity.UserEntity;
+import com.findy.user.out.repository.jpa.JpaUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

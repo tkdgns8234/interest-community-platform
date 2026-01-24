@@ -1,6 +1,6 @@
-package com.findy.user.infrastructure.repository.jpa;
+package com.findy.user.out.repository.jpa;
 
-import com.findy.user.infrastructure.repository.entity.UserRelationEntity;
+import com.findy.user.out.repository.entity.UserRelationEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface JpaUserRelationRepository extends JpaRepository<UserRelationEntity, Long> {

@@ -1,4 +1,4 @@
-package com.findy.user.presentation.api.user.request;
+package com.findy.user.in.rest.request;
 
 import com.findy.user.domain.model.social.Provider;
 
