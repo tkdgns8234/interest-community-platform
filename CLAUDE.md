@@ -18,7 +18,7 @@ path: rules/ ~.md files
 ./gradlew test
 
 # Run a single test class
-./gradlew test --tests "com.findy.user.domain.UserTest"
+./gradlew test --tests "com.findy.user.domain.model.UserTest"
 
 # Run the application
 ./gradlew bootRun
