@@ -1,5 +1,7 @@
 package com.findy.user.domain;
 
+import com.findy.user.domain.exception.InvalidUserInfoException;
+import com.findy.user.domain.exception.SelfFollowException;
 import com.findy.user.domain.social.SocialAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +40,7 @@ class UserTest {
         @DisplayName("UserInfo가 null이면 예외가 발생한다")
         void throwExceptionWhenUserInfoIsNull() {
             assertThatThrownBy(() -> new User(1L, null, socialAccount))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(InvalidUserInfoException.class)
                     .hasMessage("UserInfo cannot be null");
         }
 
@@ -73,7 +75,7 @@ class UserTest {
             User user = new User(1L, userInfo, socialAccount);
 
             assertThatThrownBy(() -> user.follow(user))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(SelfFollowException.class)
                     .hasMessage("Cannot follow yourself");
         }
 
@@ -116,7 +118,7 @@ class UserTest {
             User user = new User(1L, userInfo, socialAccount);
 
             assertThatThrownBy(() -> user.unfollow(user))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(SelfFollowException.class)
                     .hasMessage("Cannot unfollow yourself");
         }
 

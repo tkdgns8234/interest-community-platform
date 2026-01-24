@@ -1,5 +1,7 @@
 package com.findy.user.domain;
 
+import com.findy.user.domain.exception.InvalidUserInfoException;
+import com.findy.user.domain.exception.SelfFollowException;
 import com.findy.user.domain.followmanager.FollowManager;
 import com.findy.user.domain.social.Provider;
 import com.findy.user.domain.social.SocialAccount;
@@ -22,7 +24,7 @@ public class User {
     @Builder
     public User (Long id, UserInfo userInfo, SocialAccount socialAccount, FollowManager followManager) {
         if (userInfo == null) {
-            throw new IllegalArgumentException("UserInfo cannot be null");
+            throw new InvalidUserInfoException("UserInfo cannot be null");
         }
 
         this.id = id;
@@ -37,7 +39,7 @@ public class User {
 
     public void follow(User targetUser) {
         if (this.equals(targetUser)) {
-            throw new IllegalArgumentException("Cannot follow yourself");
+            throw new SelfFollowException("Cannot follow yourself");
         }
 
         followManager.increaseFollowingCount();
@@ -46,7 +48,7 @@ public class User {
 
     public void unfollow(User targetUser) {
         if (this.equals(targetUser)) {
-            throw new IllegalArgumentException("Cannot unfollow yourself");
+            throw new SelfFollowException("Cannot unfollow yourself");
         }
 
         followManager.decreaseFollowingCount();

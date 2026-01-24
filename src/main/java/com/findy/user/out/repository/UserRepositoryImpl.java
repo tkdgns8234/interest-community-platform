@@ -1,5 +1,6 @@
 package com.findy.user.out.repository;
 
+import com.findy.user.app.exception.UserNotFoundException;
 import com.findy.user.app.interfaces.UserRepository;
 import com.findy.user.domain.User;
 import com.findy.user.out.repository.entity.UserEntity;
@@ -16,7 +17,7 @@ public class UserRepositoryImpl implements UserRepository {
     public User findById(long id) {
         UserEntity userEntity = jpaUserRepository
                 .findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new UserNotFoundException(id));
 
         return userEntity.toUser();
     }
