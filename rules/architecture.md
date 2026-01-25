@@ -32,6 +32,7 @@ Request → Command → Domain → Result → Response
 
 #### 원칙
 1. **API DTO는 외부 계약**
+  - 내부 로직 변경에 영향 받지 않음
 
 2. **Application DTO는 내부 전달**
   - 계층 간 데이터 전달

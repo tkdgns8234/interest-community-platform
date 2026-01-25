@@ -14,8 +14,8 @@ public class UserRelationService {
     private final UserRelationRepository userRelationRepository;
 
     public void follow(long userId, long targetUserId) {
-        User user = userService.getUserById(userId);
-        User targetUser = userService.getUserById(targetUserId);
+        User user = userService.getUser(userId);
+        User targetUser = userService.getUser(targetUserId);
 
         if (isFollowing(userId, targetUserId)) {
             throw new UserAlreadyFollowException();
@@ -26,8 +26,8 @@ public class UserRelationService {
     }
 
     public void unfollow(long userId, long targetUserId) {
-        User user = userService.getUserById(userId);
-        User targetUser = userService.getUserById(targetUserId);
+        User user = userService.getUser(userId);
+        User targetUser = userService.getUser(targetUserId);
 
         if (!isFollowing(userId, targetUserId)) {
             throw new UserNotFollowedException();
@@ -38,8 +38,8 @@ public class UserRelationService {
     }
 
     public boolean isFollowing(long userId, long targetUserId) {
-        User user = userService.getUserById(userId);
-        User targetUser = userService.getUserById(targetUserId);
+        User user = userService.getUser(userId);
+        User targetUser = userService.getUser(targetUserId);
 
         return userRelationRepository.isFollowing(user, targetUser);
     }

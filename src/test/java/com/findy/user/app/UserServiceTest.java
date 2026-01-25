@@ -1,7 +1,7 @@
 package com.findy.user.app;
 
-import com.findy.user.in.rest.request.CreateUserRequestDTO;
-import com.findy.user.in.rest.response.GetUserResponseDTO;
+import com.findy.user.in.rest.request.CreateUserRequest;
+import com.findy.user.in.rest.response.GetUserResponse;
 import com.findy.user.app.interfaces.UserRepository;
 import com.findy.user.domain.model.User;
 import com.findy.user.domain.model.UserInfo;
@@ -53,7 +53,7 @@ class UserServiceTest {
             given(userRepository.save(any(User.class))).willReturn(testUser);
 
             User createdUser = userService.createUser(
-                    new CreateUserRequestDTO(
+                    new CreateUserRequest(
                             "홍길동",
                             "gildong",
                             "https://example.com/profile.jpg"
@@ -77,8 +77,8 @@ class UserServiceTest {
         void getUserProfileById() {
             given(userRepository.findById(1L)).willReturn(testUser);
 
-            User user = userService.getUserById(1L);
-            GetUserResponseDTO response = new GetUserResponseDTO(user);
+            User user = userService.getUser(1L);
+            GetUserResponse response = new GetUserResponse(user);
 
             assertThat(response).isNotNull();
             assertThat(response.id()).isEqualTo(1L);

@@ -2,7 +2,7 @@ package com.findy.user.in.rest.request;
 
 import com.findy.user.domain.model.social.Provider;
 
-public record CreateUserRequestDTO(
+public record CreateUserRequest(
         Provider provider,
         String email,
         String password,

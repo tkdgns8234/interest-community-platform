@@ -1,7 +1,7 @@
 package com.findy.user.in.rest;
 
 import com.findy.user.app.UserRelationService;
-import com.findy.user.in.rest.request.FollowUserRequestDTO;
+import com.findy.user.in.rest.request.FollowUserRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +19,7 @@ public class ApiV1UserRelationController {
 
     //TODO:: follow, unfollow 구현
     @PostMapping("/follow")
-    public void followUser(@RequestBody FollowUserRequestDTO dto) {
+    public void followUser(@RequestBody FollowUserRequest dto) {
         userRelationService.follow(dto.userId(), dto.targetUserId());
     }
 }

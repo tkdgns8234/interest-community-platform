@@ -2,7 +2,7 @@ package com.findy.user.in.rest.request;
 
 import jakarta.validation.constraints.NotNull;
 
-public record UpdateUserRequestDTO(
+public record UpdateUserRequest(
     @NotNull
     long id,
     String name,
