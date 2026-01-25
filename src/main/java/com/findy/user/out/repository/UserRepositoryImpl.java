@@ -28,4 +28,12 @@ public class UserRepositoryImpl implements UserRepository {
         userEntity = jpaUserRepository.save(userEntity);
         return userEntity.toUser();
     }
+
+    @Override
+    public Long getUserFollowerCount(long userId) {
+        UserEntity userEntity = jpaUserRepository
+                .findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        return userEntity.getFollowerCount();
+    }
 }

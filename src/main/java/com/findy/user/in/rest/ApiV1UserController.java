@@ -1,17 +1,17 @@
 package com.findy.user.in.rest;
 
+import com.findy.common.dto.IdResponse;
 import com.findy.user.app.UserService;
 import com.findy.user.domain.model.User;
 import com.findy.user.in.rest.mapper.UserRestMapper;
 import com.findy.user.in.rest.request.CreateUserRequest;
 import com.findy.user.in.rest.request.UpdateUserRequest;
-import com.findy.user.in.rest.response.CreateUserResponse;
 import com.findy.user.in.rest.response.GetUserResponse;
-import com.findy.user.in.rest.response.UpdateUserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,24 +29,25 @@ public class ApiV1UserController {
 
     @Operation(summary = "회원 조회")
     @GetMapping("/{userId}")
-    public GetUserResponse getUser(@PathVariable Long userId) {
+    public ResponseEntity<GetUserResponse> getUser(@PathVariable Long userId) {
         User user = userService.getUser(userId);
-        return UserRestMapper.toGetResponse(user);
+        return ResponseEntity.ok(UserRestMapper.toGetResponse(user));
     }
 
     @Operation(summary = "회원 생성")
     @PostMapping
-    public CreateUserResponse createUser(@RequestBody CreateUserRequest createUserRequestDTO) {
-        val command = UserRestMapper.toCommand(createUserRequestDTO);
+    public ResponseEntity<IdResponse> createUser(@RequestBody CreateUserRequest request) {
+        val command = UserRestMapper.toCreateCommand(request);
         User user = userService.createUser(command);
-        return UserRestMapper.toCreateResponse(user);
+        return ResponseEntity.ok(new IdResponse(user.getId()));
     }
 
     @Operation(summary = "회원 정보 수정")
-    @PatchMapping
-    public UpdateUserResponse updateUserInfo(@RequestBody UpdateUserRequest updateUserRequestDTO) {
-        val command = UserRestMapper.toUpdateCommand(updateUserRequestDTO);
-        User user = userService.updateUserInfo(command);
-        return UserRestMapper.toUpdateResponse(user);
+    @PatchMapping("/{userId}")
+    public ResponseEntity<Void> updateUserInfo(@PathVariable Long userId,
+                                               @RequestBody UpdateUserRequest request) {
+        val command = UserRestMapper.toUpdateCommand(userId, request);
+        userService.updateUserInfo(command);
+        return ResponseEntity.noContent().build();
     }
 }
