@@ -65,8 +65,8 @@ class UserTest {
 
             user.follow(targetUser);
 
-            assertThat(user.followManager.getFollowingCount()).isEqualTo(1);
-            assertThat(targetUser.followManager.getFollowerCount()).isEqualTo(1);
+            assertThat(user.getFollowManager().getFollowingCount()).isEqualTo(1);
+            assertThat(targetUser.getFollowManager().getFollowerCount()).isEqualTo(1);
         }
 
         @Test
@@ -89,9 +89,9 @@ class UserTest {
             user.follow(target1);
             user.follow(target2);
 
-            assertThat(user.followManager.getFollowingCount()).isEqualTo(2);
-            assertThat(target1.followManager.getFollowerCount()).isEqualTo(1);
-            assertThat(target2.followManager.getFollowerCount()).isEqualTo(1);
+            assertThat(user.getFollowManager().getFollowingCount()).isEqualTo(2);
+            assertThat(target1.getFollowManager().getFollowerCount()).isEqualTo(1);
+            assertThat(target2.getFollowManager().getFollowerCount()).isEqualTo(1);
         }
     }
 
@@ -108,8 +108,8 @@ class UserTest {
             user.follow(targetUser);
             user.unfollow(targetUser);
 
-            assertThat(user.followManager.getFollowingCount()).isEqualTo(0);
-            assertThat(targetUser.followManager.getFollowerCount()).isEqualTo(0);
+            assertThat(user.getFollowManager().getFollowingCount()).isEqualTo(0);
+            assertThat(targetUser.getFollowManager().getFollowerCount()).isEqualTo(0);
         }
 
         @Test
@@ -130,8 +130,8 @@ class UserTest {
 
             user.unfollow(targetUser);
 
-            assertThat(user.followManager.getFollowingCount()).isEqualTo(0);
-            assertThat(targetUser.followManager.getFollowerCount()).isEqualTo(0);
+            assertThat(user.getFollowManager().getFollowingCount()).isEqualTo(0);
+            assertThat(targetUser.getFollowManager().getFollowerCount()).isEqualTo(0);
         }
     }
 

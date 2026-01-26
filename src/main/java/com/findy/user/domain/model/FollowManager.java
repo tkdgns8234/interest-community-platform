@@ -1,6 +1,6 @@
 package com.findy.user.domain.model;
 
-import com.findy.common.domain.NonNegativeCounter;
+import com.findy.common.domain.PositiveIntegerCounter;
 
 /**
  * FollowManager
@@ -8,17 +8,17 @@ import com.findy.common.domain.NonNegativeCounter;
  * ValueObject 적용을 고려하였으나, User 도메인의 내부 구현을 캡슐화한 객체에 더 가깝다고 판단. 현재 구현 유지
  */
 public class FollowManager {
-    private NonNegativeCounter followerCount;
-    private NonNegativeCounter followingCount;
+    private PositiveIntegerCounter followerCount;
+    private PositiveIntegerCounter followingCount;
 
     public FollowManager() {
-        this.followerCount = new NonNegativeCounter();
-        this.followingCount = new NonNegativeCounter();
+        this.followerCount = new PositiveIntegerCounter();
+        this.followingCount = new PositiveIntegerCounter();
     }
 
     public FollowManager(long followerCount, long followingCount) {
-        this.followerCount = new NonNegativeCounter(followerCount);
-        this.followingCount = new NonNegativeCounter(followingCount);
+        this.followerCount = new PositiveIntegerCounter(followerCount);
+        this.followingCount = new PositiveIntegerCounter(followingCount);
     }
 
     public void increaseFollowingCount() {

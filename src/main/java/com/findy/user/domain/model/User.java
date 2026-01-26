@@ -11,10 +11,10 @@ import java.util.Objects;
 
 @Getter
 public class User {
-    Long id;
-    UserInfo userInfo;
-    SocialAccount socialAccount;
-    FollowManager followManager;
+    private final Long id;
+    private final UserInfo userInfo;
+    private final SocialAccount socialAccount;
+    private final FollowManager followManager;
 
     public User (Long id, UserInfo userInfo, SocialAccount socialAccount) {
         this(id, userInfo, socialAccount, new FollowManager());
@@ -72,6 +72,10 @@ public class User {
 
     public Provider getProvider() {
         return socialAccount.getProvider();
+    }
+
+    public FollowManager getFollowManager() {
+        return followManager;
     }
 
     @Override
