@@ -46,9 +46,4 @@ public class UserService {
 
         return userRepository.save(user);
     }
-
-    @Transactional
-    public long getUserFollowerCounts(long userId) {
-        return userRepository.getUserFollowerCount(userId);
-    }
 }

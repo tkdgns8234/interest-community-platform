@@ -6,20 +6,25 @@ import com.findy.user.domain.model.User;
 import com.findy.user.in.rest.request.CreateUserRequest;
 import com.findy.user.in.rest.request.UpdateUserRequest;
 import com.findy.user.in.rest.response.GetUserResponse;
+import org.springframework.stereotype.Component;
 
+import java.util.List;
+
+@Component
 public class UserRestMapper {
-    public static CreateUserCommand toCreateCommand(CreateUserRequest req) {
-        return CreateUserCommand.builder().
-                provider(req.provider()).
-                email(req.email()).
-                password(req.password()).
-                name(req.name()).
-                nickname(req.nickname()).
-                profileImageUrl(req.profileImageUrl()).
-                build();
+
+    public CreateUserCommand toCreateCommand(CreateUserRequest req) {
+        return CreateUserCommand.builder()
+                .provider(req.provider())
+                .email(req.email())
+                .password(req.password())
+                .name(req.name())
+                .nickname(req.nickname())
+                .profileImageUrl(req.profileImageUrl())
+                .build();
     }
 
-    public static GetUserResponse toGetResponse(User user) {
+    public GetUserResponse toGetResponse(User user) {
         return GetUserResponse.builder()
                 .id(user.getId())
                 .name(user.getUserInfo().getName())
@@ -30,7 +35,7 @@ public class UserRestMapper {
                 .build();
     }
 
-    public static UpdateUserCommand toUpdateCommand(Long userId, UpdateUserRequest req) {
+    public UpdateUserCommand toUpdateCommand(Long userId, UpdateUserRequest req) {
         return UpdateUserCommand.builder()
                 .id(userId)
                 .name(req.name())

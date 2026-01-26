@@ -6,6 +6,9 @@ import com.findy.user.app.interfaces.UserRelationRepository;
 import com.findy.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -42,5 +45,15 @@ public class UserRelationService {
         User targetUser = userService.getUser(targetUserId);
 
         return userRelationRepository.isFollowing(user, targetUser);
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> getFollowers(Long userId, Long cursor, int size) {
+        return userRelationRepository.findFollowers(userId, cursor, size);
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> getFollowings(Long userId, Long cursor, int size) {
+        return userRelationRepository.findFollowings(userId, cursor, size);
     }
 }

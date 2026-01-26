@@ -26,18 +26,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/user")
 public class ApiV1UserController {
     private final UserService userService;
+    private final UserRestMapper mapper;
 
     @Operation(summary = "회원 조회")
     @GetMapping("/{userId}")
     public ResponseEntity<GetUserResponse> getUser(@PathVariable Long userId) {
         User user = userService.getUser(userId);
-        return ResponseEntity.ok(UserRestMapper.toGetResponse(user));
+        return ResponseEntity.ok(mapper.toGetResponse(user));
     }
 
     @Operation(summary = "회원 생성")
     @PostMapping
     public ResponseEntity<IdResponse> createUser(@RequestBody CreateUserRequest request) {
-        val command = UserRestMapper.toCreateCommand(request);
+        val command = mapper.toCreateCommand(request);
         User user = userService.createUser(command);
         return ResponseEntity.ok(new IdResponse(user.getId()));
     }
@@ -46,7 +47,7 @@ public class ApiV1UserController {
     @PatchMapping("/{userId}")
     public ResponseEntity<Void> updateUserInfo(@PathVariable Long userId,
                                                @RequestBody UpdateUserRequest request) {
-        val command = UserRestMapper.toUpdateCommand(userId, request);
+        val command = mapper.toUpdateCommand(userId, request);
         userService.updateUserInfo(command);
         return ResponseEntity.noContent().build();
     }
