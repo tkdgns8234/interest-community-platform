@@ -1,9 +1,8 @@
 package com.findy.user.app;
 
-import com.findy.user.app.exception.UserAlreadyFollowException;
-import com.findy.user.app.exception.UserNotFollowedException;
 import com.findy.user.app.interfaces.UserRelationRepository;
 import com.findy.user.domain.model.User;
+import com.findy.user.domain.service.UserRelationPolicy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,14 +14,13 @@ import java.util.List;
 public class UserRelationService {
     private final UserService userService;
     private final UserRelationRepository userRelationRepository;
+    private final UserRelationPolicy userRelationPolicy;
 
     public void follow(long userId, long targetUserId) {
         User user = userService.getUser(userId);
         User targetUser = userService.getUser(targetUserId);
 
-        if (isFollowing(userId, targetUserId)) {
-            throw new UserAlreadyFollowException();
-        }
+        userRelationPolicy.validateFollow(user, targetUser);
 
         user.follow(targetUser);
         userRelationRepository.follow(user, targetUser);
@@ -32,9 +30,7 @@ public class UserRelationService {
         User user = userService.getUser(userId);
         User targetUser = userService.getUser(targetUserId);
 
-        if (!isFollowing(userId, targetUserId)) {
-            throw new UserNotFollowedException();
-        }
+        userRelationPolicy.validateUnfollow(user, targetUser);
 
         user.unfollow(targetUser);
         userRelationRepository.unfollow(user, targetUser);
@@ -43,7 +39,6 @@ public class UserRelationService {
     public boolean isFollowing(long userId, long targetUserId) {
         User user = userService.getUser(userId);
         User targetUser = userService.getUser(targetUserId);
-
         return userRelationRepository.isFollowing(user, targetUser);
     }
 

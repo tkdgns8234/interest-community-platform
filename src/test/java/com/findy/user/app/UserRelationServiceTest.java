@@ -8,6 +8,7 @@ import com.findy.user.domain.model.User;
 import com.findy.user.domain.model.UserInfo;
 import com.findy.user.domain.model.social.Provider;
 import com.findy.user.domain.model.social.SocialAccount;
+import com.findy.user.domain.service.UserRelationPolicy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -23,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +35,9 @@ class UserRelationServiceTest {
 
     @Mock
     private UserRelationRepository userRelationRepository;
+
+    @Mock
+    private UserRelationPolicy userRelationPolicy;
 
     @InjectMocks
     private UserRelationService userRelationService;
@@ -66,10 +71,10 @@ class UserRelationServiceTest {
         void followSuccess() {
             given(userService.getUser(1L)).willReturn(user);
             given(userService.getUser(2L)).willReturn(targetUser);
-            given(userRelationRepository.isFollowing(user, targetUser)).willReturn(false);
 
             userRelationService.follow(1L, 2L);
 
+            verify(userRelationPolicy).validateFollow(user, targetUser);
             verify(userRelationRepository).follow(any(User.class), any(User.class));
         }
 
@@ -78,7 +83,8 @@ class UserRelationServiceTest {
         void followAlreadyFollowing() {
             given(userService.getUser(1L)).willReturn(user);
             given(userService.getUser(2L)).willReturn(targetUser);
-            given(userRelationRepository.isFollowing(user, targetUser)).willReturn(true);
+            doThrow(new UserAlreadyFollowException())
+                    .when(userRelationPolicy).validateFollow(user, targetUser);
 
             assertThatThrownBy(() -> userRelationService.follow(1L, 2L))
                     .isInstanceOf(UserAlreadyFollowException.class);
@@ -94,10 +100,10 @@ class UserRelationServiceTest {
         void unfollowSuccess() {
             given(userService.getUser(1L)).willReturn(user);
             given(userService.getUser(2L)).willReturn(targetUser);
-            given(userRelationRepository.isFollowing(user, targetUser)).willReturn(true);
 
             userRelationService.unfollow(1L, 2L);
 
+            verify(userRelationPolicy).validateUnfollow(user, targetUser);
             verify(userRelationRepository).unfollow(any(User.class), any(User.class));
         }
 
@@ -106,7 +112,8 @@ class UserRelationServiceTest {
         void unfollowNotFollowing() {
             given(userService.getUser(1L)).willReturn(user);
             given(userService.getUser(2L)).willReturn(targetUser);
-            given(userRelationRepository.isFollowing(user, targetUser)).willReturn(false);
+            doThrow(new UserNotFollowedException())
+                    .when(userRelationPolicy).validateUnfollow(user, targetUser);
 
             assertThatThrownBy(() -> userRelationService.unfollow(1L, 2L))
                     .isInstanceOf(UserNotFollowedException.class);
