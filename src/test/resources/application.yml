@@ -12,3 +12,7 @@ spring:
 logging:
   level:
     org.hibernate.orm.jdbc.bind: TRACE
+
+springdoc:
+  api-docs:
+    enabled: false
