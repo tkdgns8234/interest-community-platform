@@ -4,7 +4,6 @@ import com.findy.common.dto.CursorPageResponse;
 import com.findy.user.app.UserRelationService;
 import com.findy.user.domain.model.User;
 import com.findy.user.in.rest.mapper.UserRelationRestMapper;
-import com.findy.user.in.rest.mapper.UserRestMapper;
 import com.findy.user.in.rest.request.FollowUserRequest;
 import com.findy.user.in.rest.response.GetFollowersResponse;
 import com.findy.user.in.rest.response.GetFollowingsResponse;

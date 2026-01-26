@@ -2,8 +2,6 @@ package com.findy.user.app;
 
 import com.findy.user.app.dto.CreateUserCommand;
 import com.findy.user.app.interfaces.UserRepository;
-import com.findy.user.in.rest.mapper.UserRestMapper;
-import com.findy.user.in.rest.response.GetUserResponse;
 import com.findy.user.domain.model.User;
 import com.findy.user.domain.model.UserInfo;
 import com.findy.user.domain.model.social.Provider;
@@ -81,14 +79,13 @@ class UserServiceTest {
             given(userRepository.findById(1L)).willReturn(testUser);
 
             User user = userService.getUser(1L);
-            GetUserResponse response = UserRestMapper.toGetResponse(user);
 
-            assertThat(response).isNotNull();
-            assertThat(response.id()).isEqualTo(1L);
-            assertThat(response.name()).isEqualTo("홍길동");
-            assertThat(response.nickname()).isEqualTo("gildong");
-            assertThat(response.email()).isEqualTo("test@example.com");
-            assertThat(response.profileImageUrl()).isEqualTo("https://example.com/profile.jpg");
+            assertThat(user).isNotNull();
+            assertThat(user.getId()).isEqualTo(1L);
+            assertThat(user.getName()).isEqualTo("홍길동");
+            assertThat(user.getNickname()).isEqualTo("gildong");
+            assertThat(user.getEmail()).isEqualTo("test@example.com");
+            assertThat(user.getProfileImageUrl()).isEqualTo("https://example.com/profile.jpg");
         }
     }
 }
