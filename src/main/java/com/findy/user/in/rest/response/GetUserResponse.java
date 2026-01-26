@@ -1,5 +1,6 @@
 package com.findy.user.in.rest.response;
 
+import com.findy.common.dto.Identifiable;
 import com.findy.user.domain.model.social.Provider;
 import lombok.Builder;
 
@@ -11,5 +12,5 @@ public record GetUserResponse(
     String email,
     String profileImageUrl,
     Provider provider
-) {
+) implements Identifiable {
 }

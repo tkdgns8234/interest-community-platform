@@ -1,5 +1,6 @@
 package com.findy.user.in.rest;
 
+import com.findy.common.dto.CursorPageResponse;
 import com.findy.common.dto.IdResponse;
 import com.findy.user.app.UserService;
 import com.findy.user.domain.model.User;
@@ -18,7 +19,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Tag(name ="회원 API")
 @RestController
@@ -32,7 +36,8 @@ public class ApiV1UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<GetUserResponse> getUser(@PathVariable Long userId) {
         User user = userService.getUser(userId);
-        return ResponseEntity.ok(mapper.toGetResponse(user));
+        val response = mapper.toGetUserResponse(user);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "회원 생성")
@@ -45,10 +50,21 @@ public class ApiV1UserController {
 
     @Operation(summary = "회원 정보 수정")
     @PatchMapping("/{userId}")
-    public ResponseEntity<Void> updateUserInfo(@PathVariable Long userId,
-                                               @RequestBody UpdateUserRequest request) {
+    public ResponseEntity<Void> updateUserInfo(
+            @PathVariable Long userId,
+            @RequestBody UpdateUserRequest request) {
         val command = mapper.toUpdateCommand(userId, request);
         userService.updateUserInfo(command);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "전체 회원 목록 조회")
+    @GetMapping
+    public ResponseEntity<CursorPageResponse<GetUserResponse>> getAllUsers(
+            @RequestParam(required = false) Long cursor,
+            @RequestParam(defaultValue = "20") int size) {
+        List<User> users = userService.getAllUsers(cursor, size);
+        val response = mapper.toGetUserPageResponse(users, size);
+        return ResponseEntity.ok(response);
     }
 }

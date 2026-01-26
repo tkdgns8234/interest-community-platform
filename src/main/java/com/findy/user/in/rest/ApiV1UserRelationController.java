@@ -51,7 +51,7 @@ public class ApiV1UserRelationController {
             @RequestParam(required = false) Long cursor,
             @RequestParam(defaultValue = "20") int size) {
         List<User> users = userRelationService.getFollowers(userId, cursor, size);
-        val response = mapper.toFollowersResponse(users, size);
+        val response = mapper.toFollowerPageResponse(users, size);
         return ResponseEntity.ok(response);
     }
 
@@ -62,7 +62,7 @@ public class ApiV1UserRelationController {
             @RequestParam(required = false) Long cursor,
             @RequestParam(defaultValue = "20") int size) {
         List<User> users = userRelationService.getFollowings(userId, cursor, size);
-        val response = mapper.toFollowingsResponse(users, size);
+        val response = mapper.toFollowingPageResponse(users, size);
         return ResponseEntity.ok(response);
     }
 

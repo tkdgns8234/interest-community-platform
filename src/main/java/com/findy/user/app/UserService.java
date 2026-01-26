@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -37,6 +39,11 @@ public class UserService {
     @Transactional(readOnly = true)
     public User getUser(Long id) {
         return userRepository.findById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> getAllUsers(Long cursor, int size) {
+        return userRepository.findAll(cursor, size);
     }
 
     @Transactional

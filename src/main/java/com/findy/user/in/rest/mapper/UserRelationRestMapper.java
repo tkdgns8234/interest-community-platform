@@ -10,7 +10,7 @@ import java.util.List;
 
 @Component
 public class UserRelationRestMapper {
-    public CursorPageResponse<GetFollowersResponse> toFollowersResponse(List<User> users, int size) {
+    public CursorPageResponse<GetFollowersResponse> toFollowerPageResponse(List<User> users, int size) {
         List<GetFollowersResponse> responses = users.stream()
                 .map(user -> new GetFollowersResponse(
                         user.getId(),
@@ -22,7 +22,7 @@ public class UserRelationRestMapper {
         return CursorPageResponse.of(responses, size);
     }
 
-    public CursorPageResponse<GetFollowingsResponse> toFollowingsResponse(List<User> users, int size) {
+    public CursorPageResponse<GetFollowingsResponse> toFollowingPageResponse(List<User> users, int size) {
         List<GetFollowingsResponse> responses = users.stream()
                 .map(user -> new GetFollowingsResponse(
                         user.getId(),

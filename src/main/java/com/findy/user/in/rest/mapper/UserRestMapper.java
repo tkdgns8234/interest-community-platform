@@ -1,5 +1,6 @@
 package com.findy.user.in.rest.mapper;
 
+import com.findy.common.dto.CursorPageResponse;
 import com.findy.user.app.dto.CreateUserCommand;
 import com.findy.user.app.dto.UpdateUserCommand;
 import com.findy.user.domain.model.User;
@@ -24,7 +25,7 @@ public class UserRestMapper {
                 .build();
     }
 
-    public GetUserResponse toGetResponse(User user) {
+    public GetUserResponse toGetUserResponse(User user) {
         return GetUserResponse.builder()
                 .id(user.getId())
                 .name(user.getUserInfo().getName())
@@ -42,5 +43,13 @@ public class UserRestMapper {
                 .nickname(req.nickname())
                 .profileImageUrl(req.profileImageUrl())
                 .build();
+    }
+
+    public CursorPageResponse<GetUserResponse> toGetUserPageResponse(List<User> users, int size) {
+        List<GetUserResponse> responses = users.stream()
+                .map(this::toGetUserResponse)
+                .toList();
+
+        return CursorPageResponse.of(responses, size);
     }
 }

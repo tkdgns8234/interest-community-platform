@@ -1,13 +1,13 @@
 package com.findy.user.acceptance;
 
-import tools.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.findy.user.domain.model.social.Provider;
 import com.findy.user.in.rest.request.CreateUserRequest;
 import com.findy.user.in.rest.request.UpdateUserRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -89,6 +89,42 @@ class UserAcceptanceTest {
         mockMvc.perform(get("/api/v1/user/{userId}", userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nickname").value("gildong_updated"));
+    }
+
+    @Test
+    @DisplayName("전체 회원 목록을 페이징 조회할 수 있다")
+    void getAllUsers() throws Exception {
+        // given: 여러 회원 생성
+        Long user1Id = createTestUser("user1@example.com", "user1");
+        Long user2Id = createTestUser("user2@example.com", "user2");
+        Long user3Id = createTestUser("user3@example.com", "user3");
+
+        // when & then: 첫 페이지 조회 (size=2)
+        String firstPageResponse = mockMvc.perform(get("/api/v1/user")
+                        .param("size", "2"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.hasNext").value(true))
+                .andExpect(jsonPath("$.nextCursor").exists())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // 다음 페이지 커서 추출
+        Long nextCursor = objectMapper.readTree(firstPageResponse).get("nextCursor").asLong();
+
+        // when & then: 두 번째 페이지 조회
+        mockMvc.perform(get("/api/v1/user")
+                        .param("cursor", String.valueOf(nextCursor))
+                        .param("size", "2"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(1))
+                .andExpect(jsonPath("$.hasNext").value(false))
+                .andExpect(jsonPath("$.nextCursor").isEmpty());
     }
 
     private Long createTestUser(String email, String nickname) throws Exception {
