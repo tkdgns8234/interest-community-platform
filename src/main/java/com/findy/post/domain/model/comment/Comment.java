@@ -2,7 +2,9 @@ package com.findy.post.domain.model.comment;
 
 import com.findy.post.domain.exception.ContentEmptyException;
 import com.findy.post.domain.model.LikeManager;
+import lombok.Getter;
 
+@Getter
 public class Comment {
     private final Long id;
     private Long postId;
@@ -12,14 +14,22 @@ public class Comment {
     private LikeManager likeManager;
 
     public Comment(Long id, Long postId, Long authorId, String content) {
+        this(id, postId, authorId, content, new LikeManager());
+    }
+
+    public Comment(Long id, Long postId, Long authorId, String content, LikeManager likeManager) {
+        this(id, postId, authorId, content, false, likeManager);
+    }
+
+    public Comment(Long id, Long postId, Long authorId, String content, Boolean isEdit, LikeManager likeManager) {
         validateContent(content);
 
         this.id = id;
         this.postId = postId;
         this.authorId = authorId;
         this.content = content;
-        this.isEdit = false;
-        this.likeManager = new LikeManager();
+        this.isEdit = isEdit;
+        this.likeManager = likeManager;
     }
 
     public void updateContent(String content) {

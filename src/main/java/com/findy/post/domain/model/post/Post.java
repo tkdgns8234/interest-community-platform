@@ -11,10 +11,14 @@ public class Post {
     private final LikeManager likeManager;
 
     public Post(Long id, Long authorId, PostInfo postInfo) {
+        this(id, authorId, postInfo, new LikeManager());
+    }
+
+    public Post(Long id, Long authorId, PostInfo postInfo, LikeManager likeManager) {
         this.id = id;
         this.authorId = authorId;
         this.postInfo = postInfo;
-        this.likeManager = new LikeManager();
+        this.likeManager = likeManager;
     }
 
     public void setTitle(String title) {

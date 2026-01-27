@@ -15,34 +15,34 @@ import java.util.List;
 public class UserRestMapper {
 
     public CreateUserCommand toCreateCommand(CreateUserRequest req) {
-        return CreateUserCommand.builder()
-                .provider(req.provider())
-                .email(req.email())
-                .password(req.password())
-                .name(req.name())
-                .nickname(req.nickname())
-                .profileImageUrl(req.profileImageUrl())
-                .build();
+        return new CreateUserCommand(
+                req.provider(),
+                req.email(),
+                req.password(),
+                req.name(),
+                req.nickname(),
+                req.profileImageUrl()
+        );
     }
 
     public GetUserResponse toGetUserResponse(User user) {
-        return GetUserResponse.builder()
-                .id(user.getId())
-                .name(user.getUserInfo().getName())
-                .nickname(user.getUserInfo().getNickname())
-                .email(user.getSocialAccount().getEmail())
-                .profileImageUrl(user.getUserInfo().getProfileImageUrl())
-                .provider(user.getSocialAccount().getProvider())
-                .build();
+        return new GetUserResponse(
+                user.getId(),
+                user.getName(),
+                user.getNickname(),
+                user.getEmail(),
+                user.getProfileImageUrl(),
+                user.getProvider()
+        );
     }
 
     public UpdateUserCommand toUpdateCommand(Long userId, UpdateUserRequest req) {
-        return UpdateUserCommand.builder()
-                .id(userId)
-                .name(req.name())
-                .nickname(req.nickname())
-                .profileImageUrl(req.profileImageUrl())
-                .build();
+        return new UpdateUserCommand(
+            userId,
+            req.name(),
+            req.nickname(),
+            req.profileImageUrl()
+        );
     }
 
     public CursorPageResponse<GetUserResponse> toGetUserPageResponse(List<User> users, int size) {

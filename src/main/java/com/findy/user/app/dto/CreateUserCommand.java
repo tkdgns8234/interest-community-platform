@@ -1,9 +1,7 @@
 package com.findy.user.app.dto;
 
 import com.findy.user.domain.model.social.Provider;
-import lombok.Builder;
 
-@Builder
 public record CreateUserCommand(
         Provider provider,
         String email,

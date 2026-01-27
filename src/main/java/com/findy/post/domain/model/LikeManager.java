@@ -10,18 +10,22 @@ public class LikeManager {
         this.likeCounter = new PositiveIntegerCounter();
     }
 
+    public LikeManager(Long count) {
+        this.likeCounter = new PositiveIntegerCounter(count);
+    }
+
     public Long getCount() {
         return likeCounter.getCount();
     }
 
     public void like(Long authorId, Long userId) {
         validateAuthor(authorId, userId);
-        this.likeCounter.increase();
+        this.likeCounter = this.likeCounter.increase();
     }
 
     public void unlike(Long authorId, Long userId) {
         validateAuthor(authorId, userId);
-        this.likeCounter.decrease();
+        this.likeCounter = this.likeCounter.decrease();
     }
 
     private void validateAuthor(Long authorId, Long userId) {
