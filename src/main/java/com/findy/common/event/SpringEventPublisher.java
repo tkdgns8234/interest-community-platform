@@ -10,7 +10,7 @@ public class SpringEventPublisher implements EventPublisher {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
-    public void publish(DomainEvent event) {
+    public void publish(BaseDomainEvent event) {
         applicationEventPublisher.publishEvent(event);
     }
 }
