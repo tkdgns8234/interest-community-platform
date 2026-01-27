@@ -1,8 +1,10 @@
-package com.findy.post.domain.model;
+package com.findy.post.domain.model.post;
 
-import com.findy.post.domain.exception.ContentValidationError;
-import com.findy.post.domain.exception.TitleValidationError;
+import com.findy.post.domain.exception.ContentValidationException;
+import com.findy.post.domain.exception.TitleValidateException;
+import lombok.Getter;
 
+@Getter
 public class PostInfo {
     private String title;
     private String content;
@@ -28,16 +30,16 @@ public class PostInfo {
 
         public static void title(String title) {
             if (title.length() > TITLE_MAX_LENGTH) {
-                throw new TitleValidationError("Title length exceeds the maximum limit of 255 characters.");
+                throw new TitleValidateException("Title length exceeds the maximum limit of 255 characters.");
             }
             if (title.trim().isEmpty()) {
-                throw new TitleValidationError("Title cannot be empty or whitespace.");
+                throw new TitleValidateException("Title cannot be empty or whitespace.");
             }
         }
 
         private static void content(String content) {
             if (content.length() > CONTENT_MAX_LENGTH) {
-                throw new ContentValidationError("Content length exceeds the maximum limit of 10000 characters.");
+                throw new ContentValidationException("Content length exceeds the maximum limit of 10000 characters.");
             }
         }
     }
