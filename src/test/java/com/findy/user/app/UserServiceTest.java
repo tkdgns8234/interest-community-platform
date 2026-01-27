@@ -50,14 +50,14 @@ class UserServiceTest {
         void createUserWithoutSocialAccount() {
             given(userRepository.save(any(User.class))).willReturn(testUser);
 
-            CreateUserCommand command = CreateUserCommand.builder()
-                    .provider(Provider.LOCAL)
-                    .email("test@example.com")
-                    .password("password123")
-                    .name("홍길동")
-                    .nickname("gildong")
-                    .profileImageUrl("https://example.com/profile.jpg")
-                    .build();
+            CreateUserCommand command = new CreateUserCommand(
+                    Provider.LOCAL,
+                    "test@example.com",
+                    "password123",
+                    "홍길동",
+                    "gildong",
+                    "https://example.com/profile.jpg"
+            );
 
             User createdUser = userService.createUser(command);
 
