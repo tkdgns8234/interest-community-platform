@@ -28,7 +28,7 @@ public class PostInfo {
         private static final int TITLE_MAX_LENGTH = 255;
         private static final int CONTENT_MAX_LENGTH = 10000;
 
-        public static void title(String title) {
+        private static void title(String title) {
             if (title.length() > TITLE_MAX_LENGTH) {
                 throw new TitleValidateException("Title length exceeds the maximum limit of 255 characters.");
             }

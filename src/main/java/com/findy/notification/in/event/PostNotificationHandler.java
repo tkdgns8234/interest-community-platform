@@ -5,8 +5,6 @@ import com.findy.notification.domain.model.NotificationInfo;
 import com.findy.notification.domain.model.NotificationType;
 import com.findy.notification.out.interfaces.UserRelationEntryPoint;
 import com.findy.post.domain.event.PostCreatedEvent;
-import com.findy.user.app.interfaces.UserRelationRepository;
-import com.findy.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -14,7 +12,6 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Component
