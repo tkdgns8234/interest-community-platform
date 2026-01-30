@@ -10,7 +10,7 @@ public class Category {
     private CategoryType categoryType;
 
     public Category(Long id, Long parentId, CategoryInfo categoryInfo) {
-        this(id, parentId, categoryInfo, (parentId == null) ? CategoryType.PARENT : CategoryType.CHILDREN);
+        this(id, parentId, categoryInfo, (parentId == null) ? CategoryType.PARENT : CategoryType.CHILD);
     }
 
     public Category(Long id, Long parentId, CategoryInfo categoryInfo, CategoryType categoryType) {

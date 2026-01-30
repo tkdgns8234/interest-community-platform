@@ -1,7 +1,8 @@
 package com.findy.category.in.rest.mapper;
 
-import com.findy.category.app.dto.CategoryWtihChildren;
+import com.findy.category.app.dto.CategoryWithChildren;
 import com.findy.category.app.dto.CreateCategoryCommand;
+import com.findy.category.domain.model.Category;
 import com.findy.category.in.rest.request.CreateCategoryRequest;
 import com.findy.category.in.rest.response.CategoryResponse;
 import com.findy.category.in.rest.response.GetAllCategoryResponse;
@@ -20,7 +21,7 @@ public class CategoryRestMapper {
         );
     }
 
-    public List<GetAllCategoryResponse> toGetAllCategoryResponse(List<CategoryWtihChildren> categories) {
+    public List<GetAllCategoryResponse> toGetAllCategoryResponse(List<CategoryWithChildren> categories) {
         return categories.stream()
                 .map(category -> new GetAllCategoryResponse(
                         category.parent().getId(),
@@ -41,4 +42,19 @@ public class CategoryRestMapper {
                 .toList();
     }
 
+    public CategoryResponse toCategoryResponse(Category category) {
+        return new CategoryResponse(
+                category.getId(),
+                category.getParentId(),
+                category.getName(),
+                category.getDescription(),
+                category.getIconUrl()
+        );
+    }
+
+    public List<CategoryResponse> toCategoryResponseList(List<Category> categories) {
+        return categories.stream()
+                .map(this::toCategoryResponse)
+                .toList();
+    }
 }

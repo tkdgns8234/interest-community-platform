@@ -24,15 +24,25 @@ public class CategoryQueryRepository {
                 builder.and(category.parentId.isNull());
                 builder.and(category.categoryType.eq(CategoryType.PARENT));
             }
-            case CHILDREN -> {
+            case CHILD -> {
                 builder.and(category.parentId.isNotNull());
-                builder.and(category.categoryType.eq(CategoryType.CHILDREN));
+                builder.and(category.categoryType.eq(CategoryType.CHILD));
             }
         }
 
         return queryFactory
                 .selectFrom(category)
                 .where(builder)
+                .orderBy(category.name.asc())
+                .fetch();
+    }
+
+    public List<CategoryEntity> findByParentId(Long parentId) {
+        QCategoryEntity category = QCategoryEntity.categoryEntity;
+
+        return queryFactory
+                .selectFrom(category)
+                .where(category.parentId.eq(parentId))
                 .orderBy(category.name.asc())
                 .fetch();
     }

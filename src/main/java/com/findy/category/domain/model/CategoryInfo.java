@@ -33,8 +33,8 @@ public class CategoryInfo {
         }
 
         private static void description(String description) {
-            if (description.length() > DESCRIPTION_SIZE_LIMIT) {
-                throw new CreateCategoryException("Description cannot exceed" + DESCRIPTION_SIZE_LIMIT +  "characters");
+            if (description != null && description.length() > DESCRIPTION_SIZE_LIMIT) {
+                throw new CreateCategoryException("Description cannot exceed " + DESCRIPTION_SIZE_LIMIT + " characters");
             }
         }
     }

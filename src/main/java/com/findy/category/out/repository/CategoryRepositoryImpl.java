@@ -1,6 +1,7 @@
 package com.findy.category.out.repository;
 
-import com.findy.category.app.dto.CategoryWtihChildren;
+import com.findy.category.app.dto.CategoryWithChildren;
+import com.findy.category.app.exception.CategoryNotFoundException;
 import com.findy.category.app.interfaces.CategoryRepository;
 import com.findy.category.domain.model.Category;
 import com.findy.category.domain.model.CategoryType;
@@ -28,12 +29,12 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
-    public List<CategoryWtihChildren> getAll() {
+    public List<CategoryWithChildren> getAll() {
         // Parent 카테고리 조회
         List<CategoryEntity> parents = categoryQueryRepository.findAll(CategoryType.PARENT);
 
         // Children 카테고리 조회
-        List<CategoryEntity> allChildren = categoryQueryRepository.findAll(CategoryType.CHILDREN);
+        List<CategoryEntity> allChildren = categoryQueryRepository.findAll(CategoryType.CHILD);
 
         // 부모 ID로 그룹핑
         Map<Long, List<Category>> childrenMap = allChildren.stream()
@@ -42,10 +43,24 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
         // 조합
         return parents.stream()
-                .map(parent -> new CategoryWtihChildren(
+                .map(parent -> new CategoryWithChildren(
                         parent.toCategory(),
                         childrenMap.getOrDefault(parent.getId(), List.of())
                 ))
+                .toList();
+    }
+
+    @Override
+    public Category findById(Long id) {
+        return jpaCategoryRepository.findById(id)
+                .map(CategoryEntity::toCategory)
+                .orElseThrow(() -> new CategoryNotFoundException(id));
+    }
+
+    @Override
+    public List<Category> findChildrenByParentId(Long parentId) {
+        return categoryQueryRepository.findByParentId(parentId).stream()
+                .map(CategoryEntity::toCategory)
                 .toList();
     }
 }
