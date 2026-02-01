@@ -1,4 +1,4 @@
-package com.findy.topic.domain.model;
+package com.findy.topic.domain.model.membership;
 
 public enum MemberRole {
     CREATOR,   // Topic creator - full permissions

@@ -2,6 +2,8 @@ package com.findy.topic.domain.model;
 
 import com.findy.topic.domain.exception.CannotAssignCreatorRoleException;
 import com.findy.topic.domain.exception.CreatorRoleCannotBeChangedException;
+import com.findy.topic.domain.model.membership.MemberRole;
+import com.findy.topic.domain.model.membership.TopicMembership;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -62,7 +64,6 @@ class TopicMembershipTest {
         assertThat(updated.isManager()).isTrue();
         assertThat(updated.canManageMembers()).isTrue();
         assertThat(updated.canManageTopic()).isFalse();
-        assertThat(updated.getJoinedAt()).isEqualTo(membership.getJoinedAt());
     }
 
     @Test

@@ -1,4 +1,4 @@
-package com.findy.topic.domain.model;
+package com.findy.topic.domain.model.topic;
 
 import lombok.Getter;
 

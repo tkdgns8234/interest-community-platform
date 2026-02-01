@@ -1,8 +1,8 @@
 package com.findy.topic.out.repository.entity;
 
 import com.findy.common.out.repository.entity.BaseTimeEntity;
-import com.findy.topic.domain.model.MemberRole;
-import com.findy.topic.domain.model.TopicMembership;
+import com.findy.topic.domain.model.membership.MemberRole;
+import com.findy.topic.domain.model.membership.TopicMembership;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,8 +15,6 @@ import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @NoArgsConstructor
 @Getter
@@ -24,7 +22,7 @@ import java.time.LocalDateTime;
     name = "topic_membership",
     uniqueConstraints = {
         @UniqueConstraint(
-            name = "uk_topic_membership_user_topic",
+            name = "uk_topic_membership_user_id_topic_id",
             columnNames = {"user_id", "topic_id"}
         )
     }
@@ -44,15 +42,11 @@ public class TopicMembershipEntity extends BaseTimeEntity {
     @Column(nullable = false, length = 20)
     private MemberRole role;
 
-    @Column(nullable = false)
-    private LocalDateTime joinedAt;
-
     public TopicMembershipEntity(TopicMembership membership) {
         this.id = membership.getId();
         this.userId = membership.getUserId();
         this.topicId = membership.getTopicId();
         this.role = membership.getRole();
-        this.joinedAt = membership.getJoinedAt();
     }
 
     public TopicMembership toTopicMembership() {
@@ -61,7 +55,6 @@ public class TopicMembershipEntity extends BaseTimeEntity {
                 .userId(this.userId)
                 .topicId(this.topicId)
                 .role(this.role)
-                .joinedAt(this.joinedAt)
                 .build();
     }
 

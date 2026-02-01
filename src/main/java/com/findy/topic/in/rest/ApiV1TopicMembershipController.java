@@ -2,7 +2,7 @@ package com.findy.topic.in.rest;
 
 import com.findy.common.dto.CursorPageResponse;
 import com.findy.topic.app.TopicMembershipService;
-import com.findy.topic.domain.model.TopicMembership;
+import com.findy.topic.domain.model.membership.TopicMembership;
 import com.findy.topic.in.rest.mapper.TopicMembershipRestMapper;
 import com.findy.topic.in.rest.request.JoinTopicRequest;
 import com.findy.topic.in.rest.request.LeaveTopicRequest;

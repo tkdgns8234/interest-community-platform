@@ -1,11 +1,10 @@
-package com.findy.topic.domain.model;
+package com.findy.topic.domain.model.membership;
 
 import com.findy.topic.domain.exception.CannotAssignCreatorRoleException;
 import com.findy.topic.domain.exception.CreatorRoleCannotBeChangedException;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -14,19 +13,17 @@ public class TopicMembership {
     private final Long userId;
     private final Long topicId;
     private final MemberRole role;
-    private final LocalDateTime joinedAt;
 
     public TopicMembership(Long userId, Long topicId, MemberRole role) {
-        this(null, userId, topicId, role, LocalDateTime.now());
+        this(null, userId, topicId, role);
     }
 
     @Builder
-    public TopicMembership(Long id, Long userId, Long topicId, MemberRole role, LocalDateTime joinedAt) {
+    public TopicMembership(Long id, Long userId, Long topicId, MemberRole role) {
         this.id = id;
         this.userId = userId;
         this.topicId = topicId;
         this.role = role;
-        this.joinedAt = joinedAt != null ? joinedAt : LocalDateTime.now();
     }
 
     public static TopicMembership createCreatorMembership(Long userId, Long topicId) {
@@ -65,7 +62,6 @@ public class TopicMembership {
                 .userId(this.userId)
                 .topicId(this.topicId)
                 .role(newRole)
-                .joinedAt(this.joinedAt)
                 .build();
     }
 

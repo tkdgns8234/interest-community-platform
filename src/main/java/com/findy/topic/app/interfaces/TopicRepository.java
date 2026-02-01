@@ -1,6 +1,6 @@
 package com.findy.topic.app.interfaces;
 
-import com.findy.topic.domain.model.Topic;
+import com.findy.topic.domain.model.topic.Topic;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.findy.topic.out.repository;
 
 import com.findy.topic.app.interfaces.TopicMembershipRepository;
-import com.findy.topic.domain.model.TopicMembership;
+import com.findy.topic.domain.model.membership.TopicMembership;
 import com.findy.topic.out.repository.entity.TopicMembershipEntity;
 import com.findy.topic.out.repository.jpa.JpaTopicMembershipRepository;
 import com.findy.topic.out.repository.querydsl.TopicMembershipQueryRepository;

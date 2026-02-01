@@ -1,12 +1,13 @@
 package com.findy.topic.in.rest.response;
 
 import com.findy.common.dto.Identifiable;
-import com.findy.topic.domain.model.membership.MemberRole;
 
-public record GetTopicMembershipResponse(
+public record GetTopicPostResponse(
         Long id,
-        Long userId,
         Long topicId,
-        MemberRole role
+        Long authorId,
+        String title,
+        String content,
+        Long likeCount
 ) implements Identifiable {
 }

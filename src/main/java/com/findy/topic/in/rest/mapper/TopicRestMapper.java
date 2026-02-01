@@ -3,7 +3,7 @@ package com.findy.topic.in.rest.mapper;
 import com.findy.common.dto.CursorPageResponse;
 import com.findy.topic.app.dto.CreateTopicCommand;
 import com.findy.topic.app.dto.UpdateTopicCommand;
-import com.findy.topic.domain.model.Topic;
+import com.findy.topic.domain.model.topic.Topic;
 import com.findy.topic.in.rest.request.CreateTopicRequest;
 import com.findy.topic.in.rest.request.UpdateTopicRequest;
 import com.findy.topic.in.rest.response.GetTopicResponse;

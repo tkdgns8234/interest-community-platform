@@ -1,7 +1,7 @@
 package com.findy.topic.in.rest.mapper;
 
 import com.findy.common.dto.CursorPageResponse;
-import com.findy.topic.domain.model.TopicMembership;
+import com.findy.topic.domain.model.membership.TopicMembership;
 import com.findy.topic.in.rest.response.GetTopicMembershipResponse;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +14,7 @@ public class TopicMembershipRestMapper {
                 membership.getId(),
                 membership.getUserId(),
                 membership.getTopicId(),
-                membership.getRole(),
-                membership.getJoinedAt()
+                membership.getRole()
         );
     }
 

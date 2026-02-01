@@ -1,6 +1,6 @@
 package com.findy.topic.app.interfaces;
 
-import com.findy.topic.domain.model.TopicMembership;
+import com.findy.topic.domain.model.membership.TopicMembership;
 
 import java.util.List;
 import java.util.Optional;

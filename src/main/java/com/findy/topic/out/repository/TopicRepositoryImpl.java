@@ -2,7 +2,7 @@ package com.findy.topic.out.repository;
 
 import com.findy.topic.app.exception.TopicNotFoundException;
 import com.findy.topic.app.interfaces.TopicRepository;
-import com.findy.topic.domain.model.Topic;
+import com.findy.topic.domain.model.topic.Topic;
 import com.findy.topic.out.repository.entity.TopicEntity;
 import com.findy.topic.out.repository.jpa.JpaTopicRepository;
 import com.findy.topic.out.repository.querydsl.TopicQueryRepository;

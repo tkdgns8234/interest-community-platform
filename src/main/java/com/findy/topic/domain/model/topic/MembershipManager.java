@@ -1,4 +1,4 @@
-package com.findy.topic.domain.model;
+package com.findy.topic.domain.model.topic;
 
 import com.findy.common.domain.PositiveIntegerCounter;
 import lombok.Getter;

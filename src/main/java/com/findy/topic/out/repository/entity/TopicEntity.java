@@ -1,9 +1,9 @@
 package com.findy.topic.out.repository.entity;
 
 import com.findy.common.out.repository.entity.BaseTimeEntity;
-import com.findy.topic.domain.model.MembershipManager;
-import com.findy.topic.domain.model.Topic;
-import com.findy.topic.domain.model.TopicInfo;
+import com.findy.topic.domain.model.topic.MembershipManager;
+import com.findy.topic.domain.model.topic.Topic;
+import com.findy.topic.domain.model.topic.TopicInfo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
