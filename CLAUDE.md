@@ -30,7 +30,7 @@ path: rules/ ~.md files
 
 The codebase follows DDD with packages organized by bounded context:
 - `com.findy.user.domain` - User aggregate with value objects
-- `com.findy.common.domain` - Shared domain primitives (e.g., `IntegerCounter`)
+- `com.findy.global.domain` - Shared domain primitives (e.g., `IntegerCounter`)
 
 ### Domain Model Patterns
 

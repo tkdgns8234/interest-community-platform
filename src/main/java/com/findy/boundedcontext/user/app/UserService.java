@@ -1,0 +1,56 @@
+package com.findy.boundedcontext.user.app;
+
+import com.findy.boundedcontext.user.app.dto.CreateUserCommand;
+import com.findy.boundedcontext.user.app.dto.UpdateUserCommand;
+import com.findy.boundedcontext.user.app.interfaces.UserRepository;
+import com.findy.boundedcontext.user.domain.model.social.SocialAccount;
+import com.findy.boundedcontext.user.domain.model.User;
+import com.findy.boundedcontext.user.domain.model.UserInfo;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class UserService {
+    private final UserRepository userRepository;
+
+    @Transactional
+    public User createUser(CreateUserCommand command) {
+        UserInfo userInfo = new UserInfo(
+                command.name(),
+                command.nickname(),
+                command.profileImageUrl()
+        );
+        SocialAccount socialAccount = SocialAccount.create(
+                null,
+                command.email(),
+                command.password(),
+                command.provider(),
+                null
+        );
+
+        User user = new User(null, userInfo, socialAccount);
+        return userRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public User getUser(Long id) {
+        return userRepository.findById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> getAllUsers(Long cursor, int size) {
+        return userRepository.findAll(cursor, size);
+    }
+
+    @Transactional
+    public User updateUserInfo(UpdateUserCommand command) {
+        User user = userRepository.findById(command.id());
+        user.updateUserInfo(command.nickname(), command.profileImageUrl());
+
+        return userRepository.save(user);
+    }
+}

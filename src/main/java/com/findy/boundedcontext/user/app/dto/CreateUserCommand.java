@@ -1,0 +1,13 @@
+package com.findy.boundedcontext.user.app.dto;
+
+import com.findy.boundedcontext.user.domain.model.social.Provider;
+
+public record CreateUserCommand(
+        Provider provider,
+        String email,
+        String password,
+        String name,
+        String nickname,
+        String profileImageUrl
+) {
+}
