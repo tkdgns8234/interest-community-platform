@@ -1,6 +1,6 @@
 package com.findy.topic.app;
 
-import com.findy.post.domain.model.post.PostInfo;
+import com.findy.common.domain.PostInfo;
 import com.findy.topic.app.exception.TopicPostNotFoundException;
 import com.findy.topic.app.exception.UnauthorizedTopicPostAccessException;
 import com.findy.topic.app.interfaces.TopicMembershipRepository;

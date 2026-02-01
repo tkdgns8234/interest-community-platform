@@ -4,8 +4,10 @@ import com.findy.common.event.EventPublisher;
 import com.findy.topic.app.dto.CreateTopicCommand;
 import com.findy.topic.app.dto.UpdateTopicCommand;
 import com.findy.topic.app.exception.UnauthorizedTopicAccessException;
+import com.findy.topic.app.interfaces.TopicMembershipRepository;
 import com.findy.topic.app.interfaces.TopicRepository;
 import com.findy.topic.domain.event.TopicDeletedEvent;
+import com.findy.topic.domain.model.membership.TopicMembership;
 import com.findy.topic.domain.model.topic.Topic;
 import com.findy.topic.domain.model.topic.TopicInfo;
 import com.findy.topic.out.interfaces.CategoryEntryPoint;
@@ -19,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TopicService {
     private final TopicRepository topicRepository;
+    private final TopicMembershipRepository membershipRepository;
     private final CategoryEntryPoint categoryEntryPoint;
     private final EventPublisher eventPublisher;
 
@@ -40,7 +43,16 @@ public class TopicService {
                 topicInfo
         );
 
-        return topicRepository.save(topic);
+        topic = topicRepository.save(topic);
+
+        // Creator Membership 자동 생성
+        TopicMembership creatorMembership = TopicMembership.createCreatorMembership(
+                command.creatorId(),
+                topic.getId()
+        );
+        membershipRepository.save(creatorMembership);
+
+        return topic;
     }
 
     @Transactional(readOnly = true)

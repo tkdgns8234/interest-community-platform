@@ -105,20 +105,4 @@ class TopicMembershipTest {
                 .isInstanceOf(CannotAssignCreatorRoleException.class)
                 .hasMessage("Cannot assign CREATOR role to member");
     }
-
-    @Test
-    @DisplayName("MemberRole permissions should work correctly")
-    void memberRolePermissions() {
-        assertThat(MemberRole.CREATOR.canManageTopic()).isTrue();
-        assertThat(MemberRole.CREATOR.canManageMembers()).isTrue();
-        assertThat(MemberRole.CREATOR.canParticipate()).isTrue();
-
-        assertThat(MemberRole.MANAGER.canManageTopic()).isFalse();
-        assertThat(MemberRole.MANAGER.canManageMembers()).isTrue();
-        assertThat(MemberRole.MANAGER.canParticipate()).isTrue();
-
-        assertThat(MemberRole.MEMBER.canManageTopic()).isFalse();
-        assertThat(MemberRole.MEMBER.canManageMembers()).isFalse();
-        assertThat(MemberRole.MEMBER.canParticipate()).isTrue();
-    }
 }

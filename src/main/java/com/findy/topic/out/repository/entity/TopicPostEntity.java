@@ -1,8 +1,8 @@
 package com.findy.topic.out.repository.entity;
 
+import com.findy.common.domain.PostInfo;
 import com.findy.common.out.repository.entity.BaseTimeEntity;
 import com.findy.post.domain.model.LikeManager;
-import com.findy.post.domain.model.post.PostInfo;
 import com.findy.topic.domain.model.post.TopicPost;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

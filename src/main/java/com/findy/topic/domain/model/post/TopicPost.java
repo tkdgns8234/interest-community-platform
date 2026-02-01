@@ -1,7 +1,7 @@
 package com.findy.topic.domain.model.post;
 
+import com.findy.common.domain.PostInfo;
 import com.findy.post.domain.model.LikeManager;
-import com.findy.post.domain.model.post.PostInfo;
 import lombok.Builder;
 import lombok.Getter;
 
