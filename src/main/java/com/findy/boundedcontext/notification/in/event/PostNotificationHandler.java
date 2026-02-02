@@ -1,6 +1,6 @@
 package com.findy.boundedcontext.notification.in.event;
 
-import com.findy.boundedcontext.notification.app.NotificationService;
+import com.findy.boundedcontext.notification.app.usecase.CreateNotificationUseCase;
 import com.findy.boundedcontext.notification.domain.model.NotificationInfo;
 import com.findy.boundedcontext.notification.domain.model.NotificationType;
 import com.findy.shared.user.interfaces.UserRelationEntryPoint;
@@ -17,7 +17,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class PostNotificationHandler {
-    private final NotificationService notificationService;
+    private final CreateNotificationUseCase createNotificationUseCase;
     private final UserRelationEntryPoint userRelationEntryPoint;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -52,7 +52,7 @@ public class PostNotificationHandler {
                     )
                 );
 
-                notificationService.createNotification(id, info);
+                createNotificationUseCase.execute(id, info);
                 totalNotifications++;
             }
 

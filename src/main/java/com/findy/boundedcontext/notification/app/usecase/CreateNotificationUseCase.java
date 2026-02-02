@@ -1,4 +1,4 @@
-package com.findy.boundedcontext.notification.app;
+package com.findy.boundedcontext.notification.app.usecase;
 
 import com.findy.boundedcontext.notification.app.interfaces.NotificationRepository;
 import com.findy.boundedcontext.notification.app.interfaces.NotificationSender;
@@ -12,12 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class NotificationService {
+public class CreateNotificationUseCase {
     private final NotificationRepository notificationRepository;
     private final NotificationSender notificationSender;
 
     @Transactional
-    public Notification createNotification(Long recipientId, NotificationInfo info) {
+    public Notification execute(Long recipientId, NotificationInfo info) {
         Notification notification = new Notification(null, recipientId, info);
         notification = notificationRepository.save(notification);
 

@@ -1,7 +1,10 @@
 package com.findy.boundedcontext.category.in.rest;
 
 import com.findy.boundedcontext.category.app.dto.CategoryWithChildren;
-import com.findy.boundedcontext.category.app.service.CategoryService;
+import com.findy.boundedcontext.category.app.usecase.CreateCategoryUseCase;
+import com.findy.boundedcontext.category.app.usecase.GetAllCategoriesUseCase;
+import com.findy.boundedcontext.category.app.usecase.GetCategoryByIdUseCase;
+import com.findy.boundedcontext.category.app.usecase.GetChildrenByParentIdUseCase;
 import com.findy.boundedcontext.category.domain.model.Category;
 import com.findy.boundedcontext.category.in.rest.mapper.CategoryRestMapper;
 import com.findy.boundedcontext.category.in.rest.request.CreateCategoryRequest;
@@ -28,20 +31,23 @@ import java.util.List;
 @Tag(name = "Category", description = "카테고리 API")
 public class ApiV1CategoryController {
     private final CategoryRestMapper mapper;
-    private final CategoryService categoryService;
+    private final CreateCategoryUseCase createCategoryUseCase;
+    private final GetAllCategoriesUseCase getAllCategoriesUseCase;
+    private final GetCategoryByIdUseCase getCategoryByIdUseCase;
+    private final GetChildrenByParentIdUseCase getChildrenByParentIdUseCase;
 
     @PostMapping
     @Operation(summary = "카테고리 생성", description = "새로운 카테고리를 생성합니다")
     public ResponseEntity<IdResponse> save(@RequestBody CreateCategoryRequest request) {
         val command = mapper.toCreateCategoryCommand(request);
-        Category category = categoryService.create(command);
+        Category category = createCategoryUseCase.execute(command);
         return ResponseEntity.ok(new IdResponse(category.getId()));
     }
 
     @GetMapping
     @Operation(summary = "전체 카테고리 조회", description = "모든 카테고리를 계층 구조로 조회합니다")
     public ResponseEntity<List<GetAllCategoryResponse>> getAll() {
-        List<CategoryWithChildren> categories = categoryService.getAllCategories();
+        List<CategoryWithChildren> categories = getAllCategoriesUseCase.execute();
         val response = mapper.toGetAllCategoryResponse(categories);
         return ResponseEntity.ok(response);
     }
@@ -49,7 +55,7 @@ public class ApiV1CategoryController {
     @GetMapping("/{id}")
     @Operation(summary = "카테고리 단건 조회", description = "ID로 특정 카테고리를 조회합니다")
     public ResponseEntity<CategoryResponse> getById(@PathVariable Long id) {
-        Category category = categoryService.getCategoryById(id);
+        Category category = getCategoryByIdUseCase.execute(id);
         val response = mapper.toCategoryResponse(category);
         return ResponseEntity.ok(response);
     }
@@ -57,7 +63,7 @@ public class ApiV1CategoryController {
     @GetMapping("/{parentId}/children")
     @Operation(summary = "자식 카테고리 조회", description = "부모 카테고리의 모든 자식 카테고리를 조회합니다")
     public ResponseEntity<List<CategoryResponse>> getChildren(@PathVariable Long parentId) {
-        List<Category> children = categoryService.getChildrenByParentId(parentId);
+        List<Category> children = getChildrenByParentIdUseCase.execute(parentId);
         val response = mapper.toCategoryResponseList(children);
         return ResponseEntity.ok(response);
     }

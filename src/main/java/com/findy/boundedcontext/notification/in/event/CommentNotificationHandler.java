@@ -1,6 +1,6 @@
 package com.findy.boundedcontext.notification.in.event;
 
-import com.findy.boundedcontext.notification.app.NotificationService;
+import com.findy.boundedcontext.notification.app.usecase.CreateNotificationUseCase;
 import com.findy.boundedcontext.notification.domain.model.NotificationInfo;
 import com.findy.boundedcontext.notification.domain.model.NotificationType;
 import com.findy.shared.post.event.CommentCreatedEvent;
@@ -14,7 +14,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Component
 @RequiredArgsConstructor
 public class CommentNotificationHandler {
-    private final NotificationService notificationService;
+    private final CreateNotificationUseCase createNotificationUseCase;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleCommentCreated(CommentCreatedEvent event) {
@@ -36,7 +36,7 @@ public class CommentNotificationHandler {
             )
         );
 
-        notificationService.createNotification(event.getPostAuthorId(), info);
+        createNotificationUseCase.execute(event.getPostAuthorId(), info);
     }
 
     private String truncateContent(String content) {
