@@ -2,7 +2,10 @@ package com.findy.boundedcontext.user.in.rest;
 
 import com.findy.global.dto.CursorPageResponse;
 import com.findy.global.dto.IdResponse;
-import com.findy.boundedcontext.user.app.UserService;
+import com.findy.boundedcontext.user.app.usecase.CreateUserUseCase;
+import com.findy.boundedcontext.user.app.usecase.GetAllUsersUseCase;
+import com.findy.boundedcontext.user.app.usecase.GetUserUseCase;
+import com.findy.boundedcontext.user.app.usecase.UpdateUserUseCase;
 import com.findy.boundedcontext.user.domain.model.User;
 import com.findy.boundedcontext.user.in.rest.mapper.UserRestMapper;
 import com.findy.boundedcontext.user.in.rest.request.CreateUserRequest;
@@ -29,13 +32,16 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
 public class ApiV1UserController {
-    private final UserService userService;
+    private final CreateUserUseCase createUserUseCase;
+    private final GetUserUseCase getUserUseCase;
+    private final GetAllUsersUseCase getAllUsersUseCase;
+    private final UpdateUserUseCase updateUserUseCase;
     private final UserRestMapper mapper;
 
     @Operation(summary = "회원 조회")
     @GetMapping("/{userId}")
     public ResponseEntity<GetUserResponse> getUser(@PathVariable Long userId) {
-        User user = userService.getUser(userId);
+        User user = getUserUseCase.execute(userId);
         val response = mapper.toGetUserResponse(user);
         return ResponseEntity.ok(response);
     }
@@ -44,7 +50,7 @@ public class ApiV1UserController {
     @PostMapping
     public ResponseEntity<IdResponse> createUser(@RequestBody CreateUserRequest request) {
         val command = mapper.toCreateCommand(request);
-        User user = userService.createUser(command);
+        User user = createUserUseCase.execute(command);
         return ResponseEntity.ok(new IdResponse(user.getId()));
     }
 
@@ -54,7 +60,7 @@ public class ApiV1UserController {
             @PathVariable Long userId,
             @RequestBody UpdateUserRequest request) {
         val command = mapper.toUpdateCommand(userId, request);
-        userService.updateUserInfo(command);
+        updateUserUseCase.execute(command);
         return ResponseEntity.noContent().build();
     }
 
@@ -63,7 +69,7 @@ public class ApiV1UserController {
     public ResponseEntity<CursorPageResponse<GetUserResponse>> getAllUsers(
             @RequestParam(required = false) Long cursor,
             @RequestParam(defaultValue = "20") int size) {
-        List<User> users = userService.getAllUsers(cursor, size);
+        List<User> users = getAllUsersUseCase.execute(cursor, size);
         val response = mapper.toGetUserPageResponse(users, size);
         return ResponseEntity.ok(response);
     }

@@ -1,7 +1,10 @@
 package com.findy.boundedcontext.user.in.rest;
 
 import com.findy.global.dto.CursorPageResponse;
-import com.findy.boundedcontext.user.app.UserRelationService;
+import com.findy.boundedcontext.user.app.usecase.FollowUserUseCase;
+import com.findy.boundedcontext.user.app.usecase.GetFollowersUseCase;
+import com.findy.boundedcontext.user.app.usecase.GetFollowingsUseCase;
+import com.findy.boundedcontext.user.app.usecase.UnfollowUserUseCase;
 import com.findy.boundedcontext.user.domain.model.User;
 import com.findy.boundedcontext.user.in.rest.mapper.UserRelationRestMapper;
 import com.findy.boundedcontext.user.in.rest.request.FollowUserRequest;
@@ -27,20 +30,23 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user/relation")
 public class ApiV1UserRelationController {
-    private final UserRelationService userRelationService;
+    private final FollowUserUseCase followUserUseCase;
+    private final UnfollowUserUseCase unfollowUserUseCase;
+    private final GetFollowersUseCase getFollowersUseCase;
+    private final GetFollowingsUseCase getFollowingsUseCase;
     private final UserRelationRestMapper mapper;
 
     @Operation(summary = "팔로우")
     @PostMapping("/follow")
     public ResponseEntity<Void> followUser(@RequestBody FollowUserRequest dto) {
-        userRelationService.follow(dto.userId(), dto.targetUserId());
+        followUserUseCase.execute(dto.userId(), dto.targetUserId());
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "언팔로우")
     @PostMapping("/unfollow")
     public ResponseEntity<Void> unfollowUser(@RequestBody FollowUserRequest dto) {
-        userRelationService.unfollow(dto.userId(), dto.targetUserId());
+        unfollowUserUseCase.execute(dto.userId(), dto.targetUserId());
         return ResponseEntity.ok().build();
     }
 
@@ -50,7 +56,7 @@ public class ApiV1UserRelationController {
             @PathVariable Long userId,
             @RequestParam(required = false) Long cursor,
             @RequestParam(defaultValue = "20") int size) {
-        List<User> users = userRelationService.getFollowers(userId, cursor, size);
+        List<User> users = getFollowersUseCase.execute(userId, cursor, size);
         val response = mapper.toFollowerPageResponse(users, size);
         return ResponseEntity.ok(response);
     }
@@ -61,7 +67,7 @@ public class ApiV1UserRelationController {
             @PathVariable Long userId,
             @RequestParam(required = false) Long cursor,
             @RequestParam(defaultValue = "20") int size) {
-        List<User> users = userRelationService.getFollowings(userId, cursor, size);
+        List<User> users = getFollowingsUseCase.execute(userId, cursor, size);
         val response = mapper.toFollowingPageResponse(users, size);
         return ResponseEntity.ok(response);
     }
