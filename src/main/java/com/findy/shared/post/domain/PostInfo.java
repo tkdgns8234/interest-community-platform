@@ -6,22 +6,24 @@ import lombok.Getter;
 
 @Getter
 public class PostInfo {
-    private String title;
-    private String content;
+    private final String title;
+    private final String content;
 
     public PostInfo(String title, String content) {
-        setTitle(title);
-        setContent(content);
-    }
-
-    public void setTitle(String title) {
         Validator.title(title);
+        Validator.content(content);
         this.title = title;
+        this.content = content;
     }
 
-    public void setContent(String content) {
+    public PostInfo withTitle(String title) {
+        Validator.title(title);
+        return new PostInfo(title, this.content);
+    }
+
+    public PostInfo withContent(String content) {
         Validator.content(content);
-        this.content = content;
+        return new PostInfo(this.title, content);
     }
 
     private static class Validator {

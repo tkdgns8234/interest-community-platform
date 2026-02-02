@@ -5,9 +5,9 @@ import lombok.Getter;
 
 @Getter
 public class TopicInfo {
-    private String name;
-    private String introduction;
-    private String coverImageUrl;
+    private final String name;
+    private final String introduction;
+    private final String coverImageUrl;
 
     public TopicInfo(String name, String introduction, String coverImageUrl) {
         Validator.name(name);
@@ -18,18 +18,18 @@ public class TopicInfo {
         this.coverImageUrl = coverImageUrl;
     }
 
-    public void updateName(String name) {
+    public TopicInfo withName(String name) {
         Validator.name(name);
-        this.name = name;
+        return new TopicInfo(name, this.introduction, this.coverImageUrl);
     }
 
-    public void updateIntroduction(String introduction) {
+    public TopicInfo withIntroduction(String introduction) {
         Validator.introduction(introduction);
-        this.introduction = introduction;
+        return new TopicInfo(this.name, introduction, this.coverImageUrl);
     }
 
-    public void updateCoverImageUrl(String coverImageUrl) {
-        this.coverImageUrl = coverImageUrl;
+    public TopicInfo withCoverImageUrl(String coverImageUrl) {
+        return new TopicInfo(this.name, this.introduction, coverImageUrl);
     }
 
     private static class Validator {

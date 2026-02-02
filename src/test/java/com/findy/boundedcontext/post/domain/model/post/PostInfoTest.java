@@ -61,9 +61,10 @@ class PostInfoTest {
         void updateTitleWithValidLength() {
             PostInfo postInfo = new PostInfo("원래 제목", "내용");
 
-            postInfo.setTitle("수정된 제목");
+            PostInfo updatedPostInfo = postInfo.withTitle("수정된 제목");
 
-            assertThat(postInfo.getTitle()).isEqualTo("수정된 제목");
+            assertThat(updatedPostInfo.getTitle()).isEqualTo("수정된 제목");
+            assertThat(postInfo.getTitle()).isEqualTo("원래 제목"); // 원본 불변 확인
         }
 
         @Test
@@ -72,7 +73,7 @@ class PostInfoTest {
             PostInfo postInfo = new PostInfo("원래 제목", "내용");
             String longTitle = "a".repeat(256);
 
-            assertThatThrownBy(() -> postInfo.setTitle(longTitle))
+            assertThatThrownBy(() -> postInfo.withTitle(longTitle))
                     .isInstanceOf(TitleValidateException.class)
                     .hasMessage("Title length exceeds the maximum limit of 255 characters.");
         }
@@ -105,9 +106,10 @@ class PostInfoTest {
         void updateContentWithValidLength() {
             PostInfo postInfo = new PostInfo("제목", "원래 내용");
 
-            postInfo.setContent("수정된 내용");
+            PostInfo updatedPostInfo = postInfo.withContent("수정된 내용");
 
-            assertThat(postInfo.getContent()).isEqualTo("수정된 내용");
+            assertThat(updatedPostInfo.getContent()).isEqualTo("수정된 내용");
+            assertThat(postInfo.getContent()).isEqualTo("원래 내용"); // 원본 불변 확인
         }
 
         @Test
@@ -116,7 +118,7 @@ class PostInfoTest {
             PostInfo postInfo = new PostInfo("제목", "원래 내용");
             String longContent = "a".repeat(10001);
 
-            assertThatThrownBy(() -> postInfo.setContent(longContent))
+            assertThatThrownBy(() -> postInfo.withContent(longContent))
                     .isInstanceOf(ContentValidationException.class)
                     .hasMessage("Content length exceeds the maximum limit of 10000 characters.");
         }

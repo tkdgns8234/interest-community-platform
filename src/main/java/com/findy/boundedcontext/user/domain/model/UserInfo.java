@@ -2,8 +2,8 @@ package com.findy.boundedcontext.user.domain.model;
 
 public class UserInfo {
     private final String name;
-    private String nickname;
-    private String profileImageUrl;
+    private final String nickname;
+    private final String profileImageUrl;
 
     public UserInfo(String name, String nickname, String profileImageUrl) {
         this.name = name;
@@ -11,9 +11,8 @@ public class UserInfo {
         this.profileImageUrl = profileImageUrl;
     }
 
-    public void update(String nickname, String profileImageUrl) {
-        this.nickname = nickname;
-        this.profileImageUrl = profileImageUrl;
+    public UserInfo withNicknameAndProfileImageUrl(String nickname, String profileImageUrl) {
+        return new UserInfo(this.name, nickname, profileImageUrl);
     }
 
     public String getName() {

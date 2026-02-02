@@ -15,8 +15,8 @@ public class UpdatePostUseCase {
     @Transactional
     public Post execute(UpdatePostCommand command) {
         Post post = postRepository.findById(command.id());
-        post.setTitle(command.title());
-        post.setContent(command.content());
+        post.updateTitle(command.title());
+        post.updateContent(command.content());
         return postRepository.save(post);
     }
 }

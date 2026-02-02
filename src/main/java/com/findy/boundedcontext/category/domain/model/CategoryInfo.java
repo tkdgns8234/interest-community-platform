@@ -5,9 +5,9 @@ import lombok.Getter;
 
 @Getter
 public class CategoryInfo {
-    private String name;
-    private String description;
-    private String iconUrl;
+    private final String name;
+    private final String description;
+    private final String iconUrl;
 
     public CategoryInfo(String name, String description, String iconUrl) {
         Validator.name(name);

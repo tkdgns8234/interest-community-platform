@@ -12,7 +12,7 @@ public class TopicPost {
     private final Long id;
     private final Long topicId;
     private final Long authorId;
-    private final PostInfo postInfo;
+    private PostInfo postInfo;
     private final LikeManager likeManager;
 
     public TopicPost(Long id, Long topicId, Long authorId, PostInfo postInfo) {
@@ -29,11 +29,11 @@ public class TopicPost {
     }
 
     public void updateTitle(String title) {
-        this.postInfo.setTitle(title);
+        this.postInfo = this.postInfo.withTitle(title);
     }
 
     public void updateContent(String content) {
-        this.postInfo.setContent(content);
+        this.postInfo = this.postInfo.withContent(content);
     }
 
     public boolean isAuthor(Long userId) {

@@ -7,7 +7,7 @@ import lombok.Getter;
 public class Post {
     private final Long id;
     private final Long authorId;
-    private final PostInfo postInfo;
+    private PostInfo postInfo;
     private final LikeManager likeManager;
 
     public Post(Long id, Long authorId, PostInfo postInfo) {
@@ -21,12 +21,12 @@ public class Post {
         this.likeManager = likeManager;
     }
 
-    public void setTitle(String title) {
-        this.postInfo.setTitle(title);
+    public void updateTitle(String title) {
+        this.postInfo = this.postInfo.withTitle(title);
     }
 
-    public void setContent(String content) {
-        this.postInfo.setContent(content);
+    public void updateContent(String content) {
+        this.postInfo = this.postInfo.withContent(content);
     }
 
     public void like(Long userId) {

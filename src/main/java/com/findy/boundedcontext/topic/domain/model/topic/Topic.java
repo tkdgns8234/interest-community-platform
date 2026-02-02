@@ -7,7 +7,7 @@ public class Topic {
     private final Long id;
     private final Long categoryId;
     private final Long creatorId;
-    private final TopicInfo topicInfo;
+    private TopicInfo topicInfo;
     private final MembershipManager membershipManager;
 
     public Topic(Long id, Long categoryId, Long creatorId, TopicInfo topicInfo) {
@@ -24,13 +24,13 @@ public class Topic {
 
     public void updateInfo(String name, String introduction, String coverImageUrl) {
         if (name != null) {
-            this.topicInfo.updateName(name);
+            this.topicInfo = this.topicInfo.withName(name);
         }
         if (introduction != null) {
-            this.topicInfo.updateIntroduction(introduction);
+            this.topicInfo = this.topicInfo.withIntroduction(introduction);
         }
         if (coverImageUrl != null) {
-            this.topicInfo.updateCoverImageUrl(coverImageUrl);
+            this.topicInfo = this.topicInfo.withCoverImageUrl(coverImageUrl);
         }
     }
 

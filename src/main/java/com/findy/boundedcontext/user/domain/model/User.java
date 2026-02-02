@@ -12,7 +12,7 @@ import java.util.Objects;
 @Getter
 public class User {
     private final Long id;
-    private final UserInfo userInfo;
+    private UserInfo userInfo;
     private final SocialAccount socialAccount;
     private final FollowManager followManager;
 
@@ -36,7 +36,7 @@ public class User {
     }
 
     public void updateUserInfo(String nickname, String profileImageUrl) {
-        userInfo.update(nickname, profileImageUrl);
+        this.userInfo = userInfo.withNicknameAndProfileImageUrl(nickname, profileImageUrl);
     }
 
     public void follow(User targetUser) {
@@ -45,7 +45,7 @@ public class User {
         }
 
         followManager.increaseFollowingCount();
-        targetUser.followManager.increaseFollowerCount(); // 객체지향 생활체조원칙 디미터법칙 위반이지만, 향후 follow 작업 관련 기능 확장(알림 등)이 있는 경우 followManager 에서 처리 가능함 (복잡성 줄이기위한 일부 trade-off)
+        targetUser.followManager.increaseFollowerCount();
     }
 
     public void unfollow(User targetUser) {

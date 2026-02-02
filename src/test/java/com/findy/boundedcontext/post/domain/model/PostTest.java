@@ -54,7 +54,7 @@ class PostTest {
         void updateTitle() {
             Post post = new Post(1L, 100L, postInfo);
 
-            post.setTitle("수정된 제목");
+            post.updateTitle("수정된 제목");
 
             assertThat(post.getPostInfo().getTitle()).isEqualTo("수정된 제목");
         }
@@ -64,7 +64,7 @@ class PostTest {
         void updateContent() {
             Post post = new Post(1L, 100L, postInfo);
 
-            post.setContent("수정된 내용입니다.");
+            post.updateContent("수정된 내용입니다.");
 
             assertThat(post.getPostInfo().getContent()).isEqualTo("수정된 내용입니다.");
         }
