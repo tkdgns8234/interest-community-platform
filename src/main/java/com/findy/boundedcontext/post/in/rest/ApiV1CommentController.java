@@ -1,7 +1,11 @@
 package com.findy.boundedcontext.post.in.rest;
 
 import com.findy.global.dto.IdResponse;
-import com.findy.boundedcontext.post.app.CommentService;
+import com.findy.boundedcontext.post.app.usecase.CreateCommentUseCase;
+import com.findy.boundedcontext.post.app.usecase.DeleteCommentUseCase;
+import com.findy.boundedcontext.post.app.usecase.GetCommentUseCase;
+import com.findy.boundedcontext.post.app.usecase.GetCommentsByPostIdUseCase;
+import com.findy.boundedcontext.post.app.usecase.UpdateCommentUseCase;
 import com.findy.boundedcontext.post.domain.model.comment.Comment;
 import com.findy.boundedcontext.post.in.rest.mapper.CommentRestMapper;
 import com.findy.boundedcontext.post.in.rest.request.CreateCommentRequest;
@@ -28,7 +32,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/post/{postId}/comment")
 public class ApiV1CommentController {
-    private final CommentService commentService;
+    private final CreateCommentUseCase createCommentUseCase;
+    private final GetCommentUseCase getCommentUseCase;
+    private final GetCommentsByPostIdUseCase getCommentsByPostIdUseCase;
+    private final UpdateCommentUseCase updateCommentUseCase;
+    private final DeleteCommentUseCase deleteCommentUseCase;
     private final CommentRestMapper mapper;
 
     @Operation(summary = "댓글 생성")
@@ -37,14 +45,14 @@ public class ApiV1CommentController {
             @PathVariable Long postId,
             @RequestBody CreateCommentRequest request) {
         val command = mapper.toCreateCommand(postId, request);
-        Comment comment = commentService.createComment(command);
+        Comment comment = createCommentUseCase.execute(command);
         return ResponseEntity.ok(new IdResponse(comment.getId()));
     }
 
     @Operation(summary = "댓글 조회")
     @GetMapping("/{commentId}")
     public ResponseEntity<GetCommentResponse> getComment(@PathVariable Long commentId) {
-        Comment comment = commentService.getComment(commentId);
+        Comment comment = getCommentUseCase.execute(commentId);
         val response = mapper.toGetCommentResponse(comment);
         return ResponseEntity.ok(response);
     }
@@ -52,7 +60,7 @@ public class ApiV1CommentController {
     @Operation(summary = "게시글의 전체 댓글 조회")
     @GetMapping
     public ResponseEntity<List<GetCommentResponse>> getCommentsByPostId(@PathVariable Long postId) {
-        List<Comment> comments = commentService.getCommentsByPostId(postId);
+        List<Comment> comments = getCommentsByPostIdUseCase.execute(postId);
         val response = mapper.toGetCommentListResponse(comments);
         return ResponseEntity.ok(response);
     }
@@ -63,14 +71,14 @@ public class ApiV1CommentController {
             @PathVariable Long commentId,
             @RequestBody UpdateCommentRequest request) {
         val command = mapper.toUpdateCommand(commentId, request);
-        commentService.updateComment(command);
+        updateCommentUseCase.execute(command);
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "댓글 삭제")
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
-        commentService.deleteComment(commentId);
+        deleteCommentUseCase.execute(commentId);
         return ResponseEntity.noContent().build();
     }
 }

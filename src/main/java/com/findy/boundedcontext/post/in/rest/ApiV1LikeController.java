@@ -1,6 +1,7 @@
 package com.findy.boundedcontext.post.in.rest;
 
-import com.findy.boundedcontext.post.app.LikeService;
+import com.findy.boundedcontext.post.app.usecase.AddLikeUseCase;
+import com.findy.boundedcontext.post.app.usecase.RemoveLikeUseCase;
 import com.findy.boundedcontext.post.domain.model.like.TargetType;
 import com.findy.boundedcontext.post.in.rest.request.LikeRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,14 +20,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class ApiV1LikeController {
-    private final LikeService likeService;
+    private final AddLikeUseCase addLikeUseCase;
+    private final RemoveLikeUseCase removeLikeUseCase;
 
     @Operation(summary = "게시글 좋아요")
     @PostMapping("/post/{postId}/like")
     public ResponseEntity<Void> likePost(
             @PathVariable Long postId,
             @RequestBody LikeRequest request) {
-        likeService.addLike(request.userId(), postId, TargetType.POST);
+        addLikeUseCase.execute(request.userId(), postId, TargetType.POST);
         return ResponseEntity.noContent().build();
     }
 
@@ -35,7 +37,7 @@ public class ApiV1LikeController {
     public ResponseEntity<Void> unlikePost(
             @PathVariable Long postId,
             @RequestBody LikeRequest request) {
-        likeService.removeLike(request.userId(), postId, TargetType.POST);
+        removeLikeUseCase.execute(request.userId(), postId, TargetType.POST);
         return ResponseEntity.noContent().build();
     }
 
@@ -44,7 +46,7 @@ public class ApiV1LikeController {
     public ResponseEntity<Void> likeComment(
             @PathVariable Long commentId,
             @RequestBody LikeRequest request) {
-        likeService.addLike(request.userId(), commentId, TargetType.COMMENT);
+        addLikeUseCase.execute(request.userId(), commentId, TargetType.COMMENT);
         return ResponseEntity.noContent().build();
     }
 
@@ -53,7 +55,7 @@ public class ApiV1LikeController {
     public ResponseEntity<Void> unlikeComment(
             @PathVariable Long commentId,
             @RequestBody LikeRequest request) {
-        likeService.removeLike(request.userId(), commentId, TargetType.COMMENT);
+        removeLikeUseCase.execute(request.userId(), commentId, TargetType.COMMENT);
         return ResponseEntity.noContent().build();
     }
 }

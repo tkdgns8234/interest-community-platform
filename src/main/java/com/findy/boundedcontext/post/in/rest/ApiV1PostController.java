@@ -2,7 +2,11 @@ package com.findy.boundedcontext.post.in.rest;
 
 import com.findy.global.dto.CursorPageResponse;
 import com.findy.global.dto.IdResponse;
-import com.findy.boundedcontext.post.app.PostService;
+import com.findy.boundedcontext.post.app.usecase.CreatePostUseCase;
+import com.findy.boundedcontext.post.app.usecase.DeletePostUseCase;
+import com.findy.boundedcontext.post.app.usecase.GetAllPostsUseCase;
+import com.findy.boundedcontext.post.app.usecase.GetPostUseCase;
+import com.findy.boundedcontext.post.app.usecase.UpdatePostUseCase;
 import com.findy.boundedcontext.post.domain.model.post.Post;
 import com.findy.boundedcontext.post.in.rest.mapper.PostRestMapper;
 import com.findy.boundedcontext.post.in.rest.request.CreatePostRequest;
@@ -30,21 +34,25 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/post")
 public class ApiV1PostController {
-    private final PostService postService;
+    private final CreatePostUseCase createPostUseCase;
+    private final GetPostUseCase getPostUseCase;
+    private final GetAllPostsUseCase getAllPostsUseCase;
+    private final UpdatePostUseCase updatePostUseCase;
+    private final DeletePostUseCase deletePostUseCase;
     private final PostRestMapper mapper;
 
     @Operation(summary = "게시글 생성")
     @PostMapping
     public ResponseEntity<IdResponse> createPost(@RequestBody CreatePostRequest request) {
         val command = mapper.toCreateCommand(request);
-        Post post = postService.createPost(command);
+        Post post = createPostUseCase.execute(command);
         return ResponseEntity.ok(new IdResponse(post.getId()));
     }
 
     @Operation(summary = "게시글 조회")
     @GetMapping("/{postId}")
     public ResponseEntity<GetPostResponse> getPost(@PathVariable Long postId) {
-        Post post = postService.getPost(postId);
+        Post post = getPostUseCase.execute(postId);
         val response = mapper.toGetPostResponse(post);
         return ResponseEntity.ok(response);
     }
@@ -54,7 +62,7 @@ public class ApiV1PostController {
     public ResponseEntity<CursorPageResponse<GetPostResponse>> getAllPosts(
             @RequestParam(required = false) Long cursor,
             @RequestParam(defaultValue = "20") int size) {
-        List<Post> posts = postService.getAllPosts(cursor, size);
+        List<Post> posts = getAllPostsUseCase.execute(cursor, size);
         val response = mapper.toGetPostPageResponse(posts, size);
         return ResponseEntity.ok(response);
     }
@@ -65,14 +73,14 @@ public class ApiV1PostController {
             @PathVariable Long postId,
             @RequestBody UpdatePostRequest request) {
         val command = mapper.toUpdateCommand(postId, request);
-        postService.updatePost(command);
+        updatePostUseCase.execute(command);
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "게시글 삭제")
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
-        postService.deletePost(postId);
+        deletePostUseCase.execute(postId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,8 +1,7 @@
-package com.findy.boundedcontext.post.app;
+package com.findy.boundedcontext.post.app.usecase;
 
 import com.findy.global.event.EventPublisher;
 import com.findy.boundedcontext.post.app.dto.CreateCommentCommand;
-import com.findy.boundedcontext.post.app.dto.UpdateCommentCommand;
 import com.findy.boundedcontext.post.app.interfaces.CommentRepository;
 import com.findy.boundedcontext.post.app.interfaces.PostRepository;
 import com.findy.shared.post.event.CommentCreatedEvent;
@@ -12,17 +11,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
-public class CommentService {
+public class CreateCommentUseCase {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final EventPublisher eventPublisher;
 
     @Transactional
-    public Comment createComment(CreateCommentCommand command) {
+    public Comment execute(CreateCommentCommand command) {
         Comment comment = new Comment(null, command.postId(), command.authorId(), command.content());
         comment = commentRepository.save(comment);
 
@@ -40,27 +37,5 @@ public class CommentService {
         eventPublisher.publish(event);
 
         return comment;
-    }
-
-    @Transactional(readOnly = true)
-    public Comment getComment(Long id) {
-        return commentRepository.findById(id);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Comment> getCommentsByPostId(Long postId) {
-        return commentRepository.findByPostId(postId);
-    }
-
-    @Transactional
-    public Comment updateComment(UpdateCommentCommand command) {
-        Comment comment = commentRepository.findById(command.id());
-        comment.updateContent(command.content());
-        return commentRepository.save(comment);
-    }
-
-    @Transactional
-    public void deleteComment(Long id) {
-        commentRepository.deleteById(id);
     }
 }
