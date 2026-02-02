@@ -25,6 +25,9 @@ public class User {
         if (userInfo == null) {
             throw new InvalidUserInfoException("UserInfo cannot be null");
         }
+        if (socialAccount == null) {
+            throw new IllegalArgumentException("SocialAccount cannot be null");
+        }
 
         this.id = id;
         this.userInfo = userInfo;
