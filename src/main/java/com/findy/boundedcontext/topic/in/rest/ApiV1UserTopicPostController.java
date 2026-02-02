@@ -1,7 +1,7 @@
 package com.findy.boundedcontext.topic.in.rest;
 
 import com.findy.global.dto.CursorPageResponse;
-import com.findy.boundedcontext.topic.app.TopicPostService;
+import com.findy.boundedcontext.topic.app.usecase.GetTopicPostsByAuthorIdUseCase;
 import com.findy.boundedcontext.topic.domain.model.post.TopicPost;
 import com.findy.boundedcontext.topic.in.rest.mapper.TopicPostRestMapper;
 import com.findy.boundedcontext.topic.in.rest.response.GetTopicPostResponse;
@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "User Topic Posts", description = "사용자 토픽 게시글 API")
 public class ApiV1UserTopicPostController {
-    private final TopicPostService topicPostService;
+    private final GetTopicPostsByAuthorIdUseCase getTopicPostsByAuthorIdUseCase;
     private final TopicPostRestMapper mapper;
 
     @GetMapping
@@ -33,7 +33,7 @@ public class ApiV1UserTopicPostController {
             @RequestParam(required = false) Long cursor,
             @RequestParam(defaultValue = "20") int size
     ) {
-        List<TopicPost> posts = topicPostService.getPostsByAuthorId(userId, cursor, size);
+        List<TopicPost> posts = getTopicPostsByAuthorIdUseCase.execute(userId, cursor, size);
         val response = mapper.toGetTopicPostPageResponse(posts, size);
         return ResponseEntity.ok(response);
     }

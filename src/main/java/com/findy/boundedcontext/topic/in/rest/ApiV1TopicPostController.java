@@ -2,7 +2,11 @@ package com.findy.boundedcontext.topic.in.rest;
 
 import com.findy.global.dto.CursorPageResponse;
 import com.findy.global.dto.IdResponse;
-import com.findy.boundedcontext.topic.app.TopicPostService;
+import com.findy.boundedcontext.topic.app.usecase.CreateTopicPostUseCase;
+import com.findy.boundedcontext.topic.app.usecase.DeleteTopicPostUseCase;
+import com.findy.boundedcontext.topic.app.usecase.GetTopicPostUseCase;
+import com.findy.boundedcontext.topic.app.usecase.GetTopicPostsByTopicIdUseCase;
+import com.findy.boundedcontext.topic.app.usecase.UpdateTopicPostUseCase;
 import com.findy.boundedcontext.topic.domain.model.post.TopicPost;
 import com.findy.boundedcontext.topic.in.rest.mapper.TopicPostRestMapper;
 import com.findy.boundedcontext.topic.in.rest.request.CreateTopicPostRequest;
@@ -31,7 +35,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Topic Post", description = "토픽 게시글 API")
 public class ApiV1TopicPostController {
-    private final TopicPostService topicPostService;
+    private final CreateTopicPostUseCase createTopicPostUseCase;
+    private final GetTopicPostUseCase getTopicPostUseCase;
+    private final GetTopicPostsByTopicIdUseCase getTopicPostsByTopicIdUseCase;
+    private final UpdateTopicPostUseCase updateTopicPostUseCase;
+    private final DeleteTopicPostUseCase deleteTopicPostUseCase;
     private final TopicPostRestMapper mapper;
 
     @PostMapping
@@ -40,7 +48,7 @@ public class ApiV1TopicPostController {
             @PathVariable Long topicId,
             @RequestBody CreateTopicPostRequest request
     ) {
-        TopicPost post = topicPostService.createPost(
+        TopicPost post = createTopicPostUseCase.execute(
                 topicId,
                 request.authorId(),
                 request.title(),
@@ -52,7 +60,7 @@ public class ApiV1TopicPostController {
     @GetMapping("/{postId}")
     @Operation(summary = "토픽 게시글 조회", description = "특정 토픽 게시글을 조회합니다")
     public ResponseEntity<GetTopicPostResponse> getPost(@PathVariable Long postId) {
-        TopicPost post = topicPostService.getPost(postId);
+        TopicPost post = getTopicPostUseCase.execute(postId);
         val response = mapper.toGetTopicPostResponse(post);
         return ResponseEntity.ok(response);
     }
@@ -64,7 +72,7 @@ public class ApiV1TopicPostController {
             @RequestParam(required = false) Long cursor,
             @RequestParam(defaultValue = "20") int size
     ) {
-        List<TopicPost> posts = topicPostService.getPostsByTopicId(topicId, cursor, size);
+        List<TopicPost> posts = getTopicPostsByTopicIdUseCase.execute(topicId, cursor, size);
         val response = mapper.toGetTopicPostPageResponse(posts, size);
         return ResponseEntity.ok(response);
     }
@@ -75,7 +83,7 @@ public class ApiV1TopicPostController {
             @PathVariable Long postId,
             @RequestBody UpdateTopicPostRequest request
     ) {
-        TopicPost post = topicPostService.updatePost(
+        TopicPost post = updateTopicPostUseCase.execute(
                 postId,
                 request.userId(),
                 request.title(),
@@ -91,7 +99,7 @@ public class ApiV1TopicPostController {
             @PathVariable Long postId,
             @RequestBody DeleteTopicPostRequest request
     ) {
-        topicPostService.deletePost(postId, request.userId());
+        deleteTopicPostUseCase.execute(postId, request.userId());
         return ResponseEntity.noContent().build();
     }
 }

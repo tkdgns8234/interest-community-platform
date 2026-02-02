@@ -2,7 +2,12 @@ package com.findy.boundedcontext.topic.in.rest;
 
 import com.findy.global.dto.CursorPageResponse;
 import com.findy.global.dto.IdResponse;
-import com.findy.boundedcontext.topic.app.TopicService;
+import com.findy.boundedcontext.topic.app.usecase.CreateTopicUseCase;
+import com.findy.boundedcontext.topic.app.usecase.DeleteTopicUseCase;
+import com.findy.boundedcontext.topic.app.usecase.GetAllTopicsUseCase;
+import com.findy.boundedcontext.topic.app.usecase.GetTopicUseCase;
+import com.findy.boundedcontext.topic.app.usecase.GetTopicsByCategoryIdUseCase;
+import com.findy.boundedcontext.topic.app.usecase.UpdateTopicUseCase;
 import com.findy.boundedcontext.topic.domain.model.topic.Topic;
 import com.findy.boundedcontext.topic.in.rest.mapper.TopicRestMapper;
 import com.findy.boundedcontext.topic.in.rest.request.CreateTopicRequest;
@@ -31,21 +36,26 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Topic", description = "토픽 API")
 public class ApiV1TopicController {
-    private final TopicService topicService;
+    private final CreateTopicUseCase createTopicUseCase;
+    private final GetTopicUseCase getTopicUseCase;
+    private final GetAllTopicsUseCase getAllTopicsUseCase;
+    private final GetTopicsByCategoryIdUseCase getTopicsByCategoryIdUseCase;
+    private final UpdateTopicUseCase updateTopicUseCase;
+    private final DeleteTopicUseCase deleteTopicUseCase;
     private final TopicRestMapper mapper;
 
     @PostMapping
     @Operation(summary = "토픽 생성", description = "새로운 토픽을 생성합니다")
     public ResponseEntity<IdResponse> createTopic(@RequestBody CreateTopicRequest request) {
         val command = mapper.toCreateCommand(request);
-        Topic topic = topicService.createTopic(command);
+        Topic topic = createTopicUseCase.execute(command);
         return ResponseEntity.ok(new IdResponse(topic.getId()));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "토픽 조회", description = "ID로 특정 토픽을 조회합니다")
     public ResponseEntity<GetTopicResponse> getTopic(@PathVariable Long id) {
-        Topic topic = topicService.getTopic(id);
+        Topic topic = getTopicUseCase.execute(id);
         val response = mapper.toGetTopicResponse(topic);
         return ResponseEntity.ok(response);
     }
@@ -59,9 +69,9 @@ public class ApiV1TopicController {
     ) {
         List<Topic> topics;
         if (categoryId != null) {
-            topics = topicService.getTopicsByCategoryId(categoryId, cursor, size);
+            topics = getTopicsByCategoryIdUseCase.execute(categoryId, cursor, size);
         } else {
-            topics = topicService.getAllTopics(cursor, size);
+            topics = getAllTopicsUseCase.execute(cursor, size);
         }
         val response = mapper.toGetTopicPageResponse(topics, size);
         return ResponseEntity.ok(response);
@@ -74,7 +84,7 @@ public class ApiV1TopicController {
             @RequestBody UpdateTopicRequest request
     ) {
         val command = mapper.toUpdateCommand(id, request);
-        Topic topic = topicService.updateTopic(command);
+        Topic topic = updateTopicUseCase.execute(command);
         val response = mapper.toGetTopicResponse(topic);
         return ResponseEntity.ok(response);
     }
@@ -85,7 +95,7 @@ public class ApiV1TopicController {
             @PathVariable Long id,
             @RequestBody DeleteTopicRequest request
     ) {
-        topicService.deleteTopic(id, request.userId());
+        deleteTopicUseCase.execute(id, request.userId());
         return ResponseEntity.noContent().build();
     }
 }

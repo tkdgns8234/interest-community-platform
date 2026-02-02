@@ -1,7 +1,7 @@
 package com.findy.boundedcontext.topic.in.rest;
 
 import com.findy.global.dto.CursorPageResponse;
-import com.findy.boundedcontext.topic.app.TopicMembershipService;
+import com.findy.boundedcontext.topic.app.usecase.GetUserTopicsUseCase;
 import com.findy.boundedcontext.topic.domain.model.membership.TopicMembership;
 import com.findy.boundedcontext.topic.in.rest.mapper.TopicMembershipRestMapper;
 import com.findy.boundedcontext.topic.in.rest.response.GetTopicMembershipResponse;
@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "User Topics", description = "사용자 토픽 API")
 public class ApiV1UserTopicController {
-    private final TopicMembershipService membershipService;
+    private final GetUserTopicsUseCase getUserTopicsUseCase;
     private final TopicMembershipRestMapper mapper;
 
     @GetMapping
@@ -33,7 +33,7 @@ public class ApiV1UserTopicController {
             @RequestParam(required = false) Long cursor,
             @RequestParam(defaultValue = "20") int size
     ) {
-        List<TopicMembership> memberships = membershipService.getUserTopics(userId, cursor, size);
+        List<TopicMembership> memberships = getUserTopicsUseCase.execute(userId, cursor, size);
         val response = mapper.toGetTopicMembershipPageResponse(memberships, size);
         return ResponseEntity.ok(response);
     }

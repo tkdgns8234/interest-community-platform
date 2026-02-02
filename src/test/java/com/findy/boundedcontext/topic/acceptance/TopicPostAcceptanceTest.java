@@ -1,6 +1,7 @@
 package com.findy.boundedcontext.topic.acceptance;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.findy.boundedcontext.category.in.rest.request.CreateCategoryRequest;
 import com.findy.boundedcontext.topic.in.rest.request.CreateTopicPostRequest;
 import com.findy.boundedcontext.topic.in.rest.request.CreateTopicRequest;
 import com.findy.boundedcontext.topic.in.rest.request.DeleteTopicPostRequest;
@@ -32,12 +33,15 @@ class TopicPostAcceptanceTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private Long categoryId;
     private Long topicId;
     private Long creatorId = 100L;
     private Long memberId = 200L;
 
     @BeforeEach
     void setUp() throws Exception {
+        // Category 생성
+        categoryId = createTestCategory("테스트 카테고리", "카테고리 설명");
         // Topic 생성 (creator가 자동으로 멤버가 됨)
         topicId = createTestTopic(creatorId, "테스트 토픽", "토픽 소개");
     }
@@ -189,8 +193,21 @@ class TopicPostAcceptanceTest {
                 .andExpect(jsonPath("$.content.length()").value(2));
     }
 
+    private Long createTestCategory(String name, String description) throws Exception {
+        CreateCategoryRequest request = new CreateCategoryRequest(null, name, description, null);
+
+        String response = mockMvc.perform(post("/api/v1/categories")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        return objectMapper.readTree(response).get("id").asLong();
+    }
+
     private Long createTestTopic(Long creatorId, String name, String introduction) throws Exception {
-        CreateTopicRequest request = new CreateTopicRequest(1L, creatorId, name, introduction, null);
+        CreateTopicRequest request = new CreateTopicRequest(categoryId, creatorId, name, introduction, null);
 
         String response = mockMvc.perform(post("/api/v1/topics")
                         .contentType(MediaType.APPLICATION_JSON)

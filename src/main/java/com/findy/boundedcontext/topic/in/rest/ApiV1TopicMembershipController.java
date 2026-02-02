@@ -1,7 +1,11 @@
 package com.findy.boundedcontext.topic.in.rest;
 
 import com.findy.global.dto.CursorPageResponse;
-import com.findy.boundedcontext.topic.app.TopicMembershipService;
+import com.findy.boundedcontext.topic.app.usecase.GetMembershipUseCase;
+import com.findy.boundedcontext.topic.app.usecase.GetTopicMembersUseCase;
+import com.findy.boundedcontext.topic.app.usecase.JoinTopicUseCase;
+import com.findy.boundedcontext.topic.app.usecase.LeaveTopicUseCase;
+import com.findy.boundedcontext.topic.app.usecase.UpdateMemberRoleUseCase;
 import com.findy.boundedcontext.topic.domain.model.membership.TopicMembership;
 import com.findy.boundedcontext.topic.in.rest.mapper.TopicMembershipRestMapper;
 import com.findy.boundedcontext.topic.in.rest.request.JoinTopicRequest;
@@ -30,7 +34,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Topic Membership", description = "토픽 멤버십 API")
 public class ApiV1TopicMembershipController {
-    private final TopicMembershipService membershipService;
+    private final JoinTopicUseCase joinTopicUseCase;
+    private final LeaveTopicUseCase leaveTopicUseCase;
+    private final GetMembershipUseCase getMembershipUseCase;
+    private final GetTopicMembersUseCase getTopicMembersUseCase;
+    private final UpdateMemberRoleUseCase updateMemberRoleUseCase;
     private final TopicMembershipRestMapper mapper;
 
     @PostMapping
@@ -39,7 +47,7 @@ public class ApiV1TopicMembershipController {
             @PathVariable Long topicId,
             @RequestBody JoinTopicRequest request
     ) {
-        TopicMembership membership = membershipService.joinTopic(request.userId(), topicId);
+        TopicMembership membership = joinTopicUseCase.execute(request.userId(), topicId);
         val response = mapper.toGetTopicMembershipResponse(membership);
         return ResponseEntity.ok(response);
     }
@@ -50,7 +58,7 @@ public class ApiV1TopicMembershipController {
             @PathVariable Long topicId,
             @RequestBody LeaveTopicRequest request
     ) {
-        membershipService.leaveTopic(request.userId(), topicId);
+        leaveTopicUseCase.execute(request.userId(), topicId);
         return ResponseEntity.noContent().build();
     }
 
@@ -60,7 +68,7 @@ public class ApiV1TopicMembershipController {
             @PathVariable Long topicId,
             @PathVariable Long userId
     ) {
-        TopicMembership membership = membershipService.getMembership(userId, topicId);
+        TopicMembership membership = getMembershipUseCase.execute(userId, topicId);
         val response = mapper.toGetTopicMembershipResponse(membership);
         return ResponseEntity.ok(response);
     }
@@ -72,7 +80,7 @@ public class ApiV1TopicMembershipController {
             @RequestParam(required = false) Long cursor,
             @RequestParam(defaultValue = "20") int size
     ) {
-        List<TopicMembership> memberships = membershipService.getTopicMembers(topicId, cursor, size);
+        List<TopicMembership> memberships = getTopicMembersUseCase.execute(topicId, cursor, size);
         val response = mapper.toGetTopicMembershipPageResponse(memberships, size);
         return ResponseEntity.ok(response);
     }
@@ -84,7 +92,7 @@ public class ApiV1TopicMembershipController {
             @PathVariable Long userId,
             @RequestBody UpdateMemberRoleRequest request
     ) {
-        TopicMembership membership = membershipService.updateMemberRole(
+        TopicMembership membership = updateMemberRoleUseCase.execute(
                 request.requesterId(),
                 userId,
                 topicId,

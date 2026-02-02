@@ -1,6 +1,11 @@
 package com.findy.boundedcontext.topic.app;
 
-import com.findy.boundedcontext.topic.app.TopicPostService;
+import com.findy.boundedcontext.topic.app.usecase.CreateTopicPostUseCase;
+import com.findy.boundedcontext.topic.app.usecase.DeleteTopicPostUseCase;
+import com.findy.boundedcontext.topic.app.usecase.GetTopicPostUseCase;
+import com.findy.boundedcontext.topic.app.usecase.GetTopicPostsByAuthorIdUseCase;
+import com.findy.boundedcontext.topic.app.usecase.GetTopicPostsByTopicIdUseCase;
+import com.findy.boundedcontext.topic.app.usecase.UpdateTopicPostUseCase;
 import com.findy.shared.post.domain.PostInfo;
 import com.findy.boundedcontext.topic.app.exception.TopicPostNotFoundException;
 import com.findy.boundedcontext.topic.app.exception.UnauthorizedTopicPostAccessException;
@@ -41,7 +46,22 @@ class TopicPostServiceTest {
     private TopicMembershipRepository membershipRepository;
 
     @InjectMocks
-    private TopicPostService topicPostService;
+    private CreateTopicPostUseCase createTopicPostUseCase;
+
+    @InjectMocks
+    private GetTopicPostUseCase getTopicPostUseCase;
+
+    @InjectMocks
+    private GetTopicPostsByTopicIdUseCase getTopicPostsByTopicIdUseCase;
+
+    @InjectMocks
+    private GetTopicPostsByAuthorIdUseCase getTopicPostsByAuthorIdUseCase;
+
+    @InjectMocks
+    private UpdateTopicPostUseCase updateTopicPostUseCase;
+
+    @InjectMocks
+    private DeleteTopicPostUseCase deleteTopicPostUseCase;
 
     private TopicPost testPost;
     private Topic testTopic;
@@ -63,7 +83,7 @@ class TopicPostServiceTest {
             given(membershipRepository.existsByUserIdAndTopicId(100L, 10L)).willReturn(true);
             given(topicPostRepository.save(any(TopicPost.class))).willReturn(testPost);
 
-            TopicPost createdPost = topicPostService.createPost(10L, 100L, "테스트 제목", "테스트 내용");
+            TopicPost createdPost = createTopicPostUseCase.execute(10L, 100L, "테스트 제목", "테스트 내용");
 
             assertThat(createdPost).isNotNull();
             assertThat(createdPost.getTopicId()).isEqualTo(10L);
@@ -79,7 +99,7 @@ class TopicPostServiceTest {
             given(topicRepository.findById(10L)).willReturn(testTopic);
             given(membershipRepository.existsByUserIdAndTopicId(200L, 10L)).willReturn(false);
 
-            assertThatThrownBy(() -> topicPostService.createPost(10L, 200L, "제목", "내용"))
+            assertThatThrownBy(() -> createTopicPostUseCase.execute(10L, 200L, "제목", "내용"))
                     .isInstanceOf(OnlyTopicMemberCanWriteException.class)
                     .hasMessage("Only topic members can write posts");
         }
@@ -94,7 +114,7 @@ class TopicPostServiceTest {
         void getPost() {
             given(topicPostRepository.findById(1L)).willReturn(Optional.of(testPost));
 
-            TopicPost post = topicPostService.getPost(1L);
+            TopicPost post = getTopicPostUseCase.execute(1L);
 
             assertThat(post).isNotNull();
             assertThat(post.getId()).isEqualTo(1L);
@@ -106,7 +126,7 @@ class TopicPostServiceTest {
         void getPostNotFound() {
             given(topicPostRepository.findById(999L)).willReturn(Optional.empty());
 
-            assertThatThrownBy(() -> topicPostService.getPost(999L))
+            assertThatThrownBy(() -> getTopicPostUseCase.execute(999L))
                     .isInstanceOf(TopicPostNotFoundException.class);
         }
 
@@ -116,7 +136,7 @@ class TopicPostServiceTest {
             given(topicRepository.findById(10L)).willReturn(testTopic);
             given(topicPostRepository.findByTopicId(10L, null, 20)).willReturn(List.of(testPost));
 
-            List<TopicPost> posts = topicPostService.getPostsByTopicId(10L, null, 20);
+            List<TopicPost> posts = getTopicPostsByTopicIdUseCase.execute(10L, null, 20);
 
             assertThat(posts).hasSize(1);
             assertThat(posts.get(0).getTopicId()).isEqualTo(10L);
@@ -127,7 +147,7 @@ class TopicPostServiceTest {
         void getPostsByAuthorId() {
             given(topicPostRepository.findByAuthorId(100L, null, 20)).willReturn(List.of(testPost));
 
-            List<TopicPost> posts = topicPostService.getPostsByAuthorId(100L, null, 20);
+            List<TopicPost> posts = getTopicPostsByAuthorIdUseCase.execute(100L, null, 20);
 
             assertThat(posts).hasSize(1);
             assertThat(posts.get(0).getAuthorId()).isEqualTo(100L);
@@ -144,7 +164,7 @@ class TopicPostServiceTest {
             given(topicPostRepository.findById(1L)).willReturn(Optional.of(testPost));
             given(topicPostRepository.save(any(TopicPost.class))).willReturn(testPost);
 
-            TopicPost updatedPost = topicPostService.updatePost(1L, 100L, "수정된 제목", "수정된 내용");
+            TopicPost updatedPost = updateTopicPostUseCase.execute(1L, 100L, "수정된 제목", "수정된 내용");
 
             assertThat(updatedPost).isNotNull();
             verify(topicPostRepository).save(any(TopicPost.class));
@@ -155,7 +175,7 @@ class TopicPostServiceTest {
         void cannotUpdatePostByNonAuthor() {
             given(topicPostRepository.findById(1L)).willReturn(Optional.of(testPost));
 
-            assertThatThrownBy(() -> topicPostService.updatePost(1L, 200L, "제목", "내용"))
+            assertThatThrownBy(() -> updateTopicPostUseCase.execute(1L, 200L, "제목", "내용"))
                     .isInstanceOf(UnauthorizedTopicPostAccessException.class)
                     .hasMessage("Unauthorized access to topic post");
         }
@@ -170,7 +190,7 @@ class TopicPostServiceTest {
         void deletePostByAuthor() {
             given(topicPostRepository.findById(1L)).willReturn(Optional.of(testPost));
 
-            topicPostService.deletePost(1L, 100L);
+            deleteTopicPostUseCase.execute(1L, 100L);
 
             verify(topicPostRepository).deleteById(1L);
         }
@@ -180,7 +200,7 @@ class TopicPostServiceTest {
         void cannotDeletePostByNonAuthor() {
             given(topicPostRepository.findById(1L)).willReturn(Optional.of(testPost));
 
-            assertThatThrownBy(() -> topicPostService.deletePost(1L, 200L))
+            assertThatThrownBy(() -> deleteTopicPostUseCase.execute(1L, 200L))
                     .isInstanceOf(UnauthorizedTopicPostAccessException.class)
                     .hasMessage("Unauthorized access to topic post");
         }
