@@ -10,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
@@ -22,9 +23,12 @@ import lombok.NoArgsConstructor;
     name = "topic_membership",
     uniqueConstraints = {
         @UniqueConstraint(
-            name = "uk_topic_membership_user_id_topic_id",
-            columnNames = {"user_id", "topic_id"}
+            name = "uk_topic_membership_topic_id_user_id",
+            columnNames = {"topic_id", "user_id"}
         )
+    },
+    indexes = {
+        @Index(name = "idx_topic_membership_user_id", columnList = "user_id")
     }
 )
 public class TopicMembershipEntity extends BaseTimeEntity {

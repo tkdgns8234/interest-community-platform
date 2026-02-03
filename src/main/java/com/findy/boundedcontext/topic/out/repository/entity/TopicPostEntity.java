@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,13 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Getter
-@Table(name = "topic_post")
+@Table(
+    name = "topic_post",
+    indexes = {
+        @Index(name = "idx_topic_post_topic_id", columnList = "topic_id"),
+        @Index(name = "idx_topic_post_author_id", columnList = "author_id")
+    }
+)
 public class TopicPostEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
