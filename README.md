@@ -48,7 +48,6 @@ public class User {
 }
 ```
 
-// TODO:: 아래 내용 일부 수정
 #### 의미 있는 메서드명 사용
 단순 getter/setter 대신 비즈니스 의도를 명확히 드러내는 메서드명을 사용했습니다.
 
@@ -473,9 +472,8 @@ public class UserRepositoryImpl implements UserRepository {
 # http://localhost:8080/swagger-ui.html
 ```
 
-// TODO:: 설계 문서 내용 정리 필요
 ## 설계 문서
 
-- [아키텍처 규칙](rules/architecture.md)
-- [도메인 모델 규칙](rules/domain-model-rules.md)
-- [객체지향 생활체조](rules/object-oriented-gymnastics-rules.md)
+- [아키텍처 규칙](rules/architecture.md) - 클린 아키텍처, 계층별 DTO 분리
+- [도메인 모델 규칙](rules/domain-model-rules.md) - POJO 기반 설계, 불변성, 캡슐화
+- [객체지향 생활체조](rules/object-oriented-gymnastics-rules.md) - ThoughtWorks Anthology 9가지 원칙
