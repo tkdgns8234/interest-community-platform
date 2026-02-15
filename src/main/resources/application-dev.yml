@@ -8,6 +8,8 @@ spring:
     init:
       mode: always
       data-locations: classpath:data.sql
+  jpa:
+    defer-datasource-initialization: true
 logging:
   level:
     org.hibernate.orm.jdbc.bind: TRACE

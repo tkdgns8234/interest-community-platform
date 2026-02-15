@@ -6,6 +6,10 @@
 - 의존성 방향은 저수준 모듈에서 고수준 모듈 방향으로 흐릅니다.
 - 객체지향 생활체조 9가지 원칙을 준수합니다.
 
+## Aggregate 참조 원칙
+- **Aggregate 내부**: 객체 참조 (강한 생명주기 결합이 있을 때)
+- **Aggregate Root 간**: ID 참조
+
 ## Aggregate Root 간 통신
 1. **Application/Domain Service에서 조율**
    - Bounded Context 간 Service 직접 참조 금지
