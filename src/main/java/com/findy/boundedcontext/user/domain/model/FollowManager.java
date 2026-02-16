@@ -6,6 +6,7 @@ import com.findy.shared.common.domain.PositiveIntegerCounter;
  * FollowManager
  * 팔로워 수와 팔로잉 수를 관리하는 클래스
  * ValueObject 적용을 고려하였으나, User 도메인의 내부 구현을 캡슐화한 객체에 더 가깝다고 판단. 현재 구현 유지
+ * 상태 변경이 핵심인 객체 -> Immutable 고려 X
  */
 public class FollowManager {
     private PositiveIntegerCounter followerCount;
