@@ -241,7 +241,7 @@ public class TopicPost {
 | 비동기 처리 가능, Eventual Consistency 허용 | Domain Event 발행 |
 | 동기적 통신 필요 | 인터페이스를 통한 간접 참조 |
 
-동기적 통신이 필요한 경우 현재는 모놀리식이므로 인터페이스를 통한 간접 참조를 사용하되, MSA 전환 시 API 통신이나 메시지 큐로 쉽게 전환할 수 있도록 설계했습니다.
+동기적 통신이 필요한 경우, 현재 모놀리식 구조에서 API 호출은 불필요한 네트워크 비용을 발생시키므로 비효율적이라 판단했습니다. 대신 인터페이스를 통한 간접 참조 방식을 채택하여 컨텍스트 간 결합도를 낮추되, 추후 MSA 전환 시 API 통신이나 메시지 큐로 유연하게 교체할 수 있도록 설계했습니다.
 
 예시
 ```java
@@ -296,7 +296,7 @@ public class JoinTopicUseCase {
 | 패키지 | 역할 | 예시 |
 |-------|------|------|
 | `global` | 애플리케이션 전역 기술 인프라 | Config, Exception Handler |
-| `shared` | Bounded Context 간 공유 도메인 | Domain Event, 공유 Value Object |
+| `shared` | Bounded Context 간 공유 도메인 (Shared Kernel) | Domain Event, 공유 Value Object |
 | `boundedcontext` | 각 도메인의 명시적 격리 | user, post, topic |
 
 ## 패키지 구조
