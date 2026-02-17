@@ -476,6 +476,6 @@ public class UserRepositoryImpl implements UserRepository {
 
 ## 설계 문서
 
-- [아키텍처 규칙](rules/architecture.md) - 클린 아키텍처, 계층별 DTO 분리
-- [도메인 모델 규칙](rules/domain-model-rules.md) - POJO 기반 설계, 불변성, 캡슐화
-- [객체지향 생활체조](rules/object-oriented-gymnastics-rules.md) - ThoughtWorks Anthology 9가지 원칙
+- [아키텍처 규칙](rules/architecture.md)
+- [도메인 모델 규칙](rules/domain-model-rules.md)
+- [객체지향 생활체조](rules/object-oriented-gymnastics-rules.md)
