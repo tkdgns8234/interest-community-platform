@@ -7,8 +7,8 @@
 
 | 원칙 | 적용 내용 |
 |-----|----------|
-| **DDD** | Bounded Context 분리, Aggregate Root 설계, 도메인 이벤트 |
-| **Clean Architecture** | 계층 분리, 의존성 역전, 계층별 DTO 분리 |
+| **DDD** | Bounded Context 분리, Aggregate 설계, 도메인 이벤트 |
+| **Clean Architecture** | 계층 분리, 의존성 역전, Service-Controller 간 DTO 분리를 통한 비즈니스 계층 보호 |
 | **객체지향 생활체조** | 원시값 포장, 캡슐화, 디미터 법칙 등 |
 
 ## 주요 적용 패턴
@@ -149,6 +149,90 @@ Domain 예외와 Application 예외를 분리하여 예외의 성격과 책임�
 
 GlobalExceptionHandler에서 예외 타입별로 적절한 HTTP 상태 코드와 에러 응답을 반환합니다.
 
+## 주요 설계 결정
+
+### 1. Aggregate 분리 기준
+
+Topic 삭제 시 TopicPost, TopicMembership도 삭제되어야 하지만, 각각 독립적으로 생성/수정/삭제되는 케이스도 많아서 별도 Aggregate Root로 분리했습니다.
+하나의 Aggregate로 묶을 경우 게시글 작성이나 멤버 가입 시마다 Topic 전체에 대한 트랜잭션 잠금이 발생하여 동시성 문제가 생길 수 있습니다.
+각 Aggregate 간은 ID를 통해 느슨하게 결합합니다.
+
+```java
+// Topic과 TopicPost는 별도 Aggregate Root
+// 직접 참조 대신 ID로 연결
+public class TopicPost {
+    private Long topicId;  // Topic 직접 참조 X
+    // ...
+}
+```
+
+**Trade-off**: Aggregate 분리로 인해 여러 Aggregate를 조율하는 비즈니스 규칙(예: 토픽 생성 시 Creator 멤버십 자동 생성)이 UseCase 계층으로 올라가게 됩니다. 현재는 단순한 조율 수준이므로 UseCase에서 처리하되, 규칙이 복잡해지거나 여러 UseCase에서 반복될 경우 Domain Service 도입을 고려할 수 있습니다.
+
+### 2. Bounded Context 간 통신 전략
+
+| 상황 | 전략 |
+|-----|------|
+| 비동기 처리 가능, Eventual Consistency 허용 | Domain Event 발행 |
+| 동기적 통신 필요 | 인터페이스를 통한 간접 참조 |
+
+동기적 통신이 필요한 경우, 현재 모놀리식 구조에서 API 호출은 불필요한 네트워크 비용을 발생시키므로 비효율적이라 판단했습니다. 대신 인터페이스를 통한 간접 참조 방식을 채택하여 컨텍스트 간 결합도를 낮추되, 추후 MSA 전환 시 API 통신이나 메시지 큐로 유연하게 교체할 수 있도록 설계했습니다.
+
+예시
+```java
+
+public interface UserRelationEntryPoint {
+    /**
+     * return: List of userId
+     */
+    List<Long> findFollowers(Long userId, Long cursor, int pageSize);
+}
+```
+```java
+
+@RequiredArgsConstructor
+@Service
+public class UserRelationEntryPointImpl implements UserRelationEntryPoint {
+    UserRelationRepository userRelationRepository;
+
+    @Override
+    public List<Long> findFollowers(Long userId, Long cursor, int pageSize) {
+        ...
+    }
+```
+
+### 3. UseCase 패턴 도입
+
+초기 단계에서는 Service로 충분했으나, 서비스가 커지면서 다음 문제가 발생했습니다:
+- Service 간 경계 모호
+- 여러 Repository를 참조하면서 Service가 비대해짐
+
+UseCase 도입으로 비즈니스 의미를 명확히 하고 의존 관계를 분리했습니다.
+
+```java
+// Before: 모호한 Service 경계
+@Service
+public class TopicMembershipService {
+    private final TopicRepository topicRepository;  // 다른 Aggregate 직접 참조
+    // ...
+}
+
+// After: 명확한 UseCase
+@Component
+public class JoinTopicUseCase {
+    // 필요한 Repository만 주입, 비즈니스 의미 명확
+}
+```
+
+### 4. 패키지 구조: global vs shared 분리
+
+기존 `common` 패키지에 기술 인프라와 도메인 개념이 혼재되어 있던 문제를 해결했습니다.
+
+| 패키지 | 역할 | 예시 |
+|-------|------|------|
+| `global` | 애플리케이션 전역 기술 인프라 | Config, Exception Handler |
+| `shared` | Bounded Context 간 공유 도메인 (Shared Kernel) | Domain Event, 공유 Value Object |
+| `boundedcontext` | 각 도메인의 명시적 격리 | user, post, topic |
+
 ## 기술 스택
 
 | 분류 | 기술 |
@@ -216,88 +300,6 @@ GlobalExceptionHandler에서 예외 타입별로 적절한 HTTP 상태 코드와
                        │   - 알림     │
                        └──────────────┘
 ```
-
-## 주요 설계 결정
-
-### 1. Aggregate Root 분리 기준
-
-> 생명주기가 같더라도 수정/조회 빈도와 데이터양을 고려하여 분리
-
-Topic 삭제 시 TopicPost, TopicMembership도 삭제되어야 하지만, 동시 로드 시 메모리 부담과 DB 락 충돌 위험을 고려해 별도 Aggregate Root로 분리했습니다. 각 Aggregate 간은 ID를 통해 느슨하게 결합합니다.
-
-```java
-// Topic과 TopicPost는 별도 Aggregate Root
-// 직접 참조 대신 ID로 연결
-public class TopicPost {
-    private Long topicId;  // Topic 직접 참조 X
-    // ...
-}
-```
-
-### 2. Bounded Context 간 통신 전략
-
-| 상황 | 전략 |
-|-----|------|
-| 비동기 처리 가능, Eventual Consistency 허용 | Domain Event 발행 |
-| 동기적 통신 필요 | 인터페이스를 통한 간접 참조 |
-
-동기적 통신이 필요한 경우, 현재 모놀리식 구조에서 API 호출은 불필요한 네트워크 비용을 발생시키므로 비효율적이라 판단했습니다. 대신 인터페이스를 통한 간접 참조 방식을 채택하여 컨텍스트 간 결합도를 낮추되, 추후 MSA 전환 시 API 통신이나 메시지 큐로 유연하게 교체할 수 있도록 설계했습니다.
-
-예시
-```java
-
-public interface UserRelationEntryPoint {
-    /**
-     * return: List of userId
-     */
-    List<Long> findFollowers(Long userId, Long cursor, int pageSize);
-}
-```
-```java
-
-@RequiredArgsConstructor
-@Service
-public class UserRelationEntryPointImpl implements UserRelationEntryPoint {
-    UserRelationRepository userRelationRepository;
-
-    @Override
-    public List<Long> findFollowers(Long userId, Long cursor, int pageSize) {
-        ...
-    }
-```
-
-### 3. UseCase 패턴 도입
-
-초기 단계에서는 Service로 충분했으나, 서비스가 커지면서 다음 문제가 발생했습니다:
-- Service 간 경계 모호
-- 여러 Repository를 참조하면서 Service가 비대해짐
-
-UseCase 도입으로 비즈니스 의미를 명확히 하고 의존 관계를 분리했습니다.
-
-```java
-// Before: 모호한 Service 경계
-@Service
-public class TopicMembershipService {
-    private final TopicRepository topicRepository;  // 다른 Aggregate 직접 참조
-    // ...
-}
-
-// After: 명확한 UseCase
-@Component
-public class JoinTopicUseCase {
-    // 필요한 Repository만 주입, 비즈니스 의미 명확
-}
-```
-
-### 4. 패키지 구조: global vs shared 분리
-
-기존 `common` 패키지에 기술 인프라와 도메인 개념이 혼재되어 있던 문제를 해결했습니다.
-
-| 패키지 | 역할 | 예시 |
-|-------|------|------|
-| `global` | 애플리케이션 전역 기술 인프라 | Config, Exception Handler |
-| `shared` | Bounded Context 간 공유 도메인 (Shared Kernel) | Domain Event, 공유 Value Object |
-| `boundedcontext` | 각 도메인의 명시적 격리 | user, post, topic |
 
 ## 패키지 구조
 
